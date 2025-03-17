@@ -3,6 +3,9 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+#이름:
+# UIJUJEONG
+
 #pip install nycflights13
 from nycflights13 import flights, planes
 

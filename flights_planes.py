@@ -21,8 +21,6 @@ planes.info()
 df = pd.merge(flights, planes, on = 'tailnum', how='left')
 df.info()
 
-jisu jisu
-
 # 보고서 주제 : 제조사별 기체 결함으로 인한 운항 지연 분석 보고서
 
 # 1. 개요 

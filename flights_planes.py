@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from nycflights13 import flights, planes
 
 #pip install nycflights13
 from nycflights13 import flights, planes
@@ -16,6 +17,28 @@ from nycflights13 import flights, planes
 
 flights.info()
 planes.info()
+
+
+# 항공사별 운항 편 시각화
+# 항공사별 운항 편
+flight = flights.groupby('carrier')['flight'].nunique().reset_index()
+flight = flight.sort_values(by='flight', ascending=False)
+
+# 데이터 정렬
+flight_sorted = flight.sort_values(by='flight', ascending=False)
+
+# 시각화
+plt.figure(figsize=(10, 6))  # 그래프 크기 조정
+plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color='skyblue')
+
+# 제목 및 축 레이블 설정
+plt.xlabel("Airline", fontsize=15, fontweight='bold')
+plt.ylabel("Number of Flights", fontsize=15, fontweight='bold')
+plt.title("Number of Flights by Airline", fontsize=20, fontweight='bold')
+plt.xticks(rotation=45)
+plt.show()
+
+
 
 # tailnum을 key로 merge 하기 
 df = pd.merge(flights, planes, on = 'tailnum', how='left')

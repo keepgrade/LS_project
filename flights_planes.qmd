@@ -15,25 +15,49 @@ format:
     theme: night  # 내장 테마 적용
 css: styles.css  # 🔥 CSS 파일 적용
 ---
+# 상황 설정
+![](./images/UA.png)
 
-# 보고서 주제 : 제조사별 기체 결함으로 인한 운항 지연 분석 보고서
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from nycflights13 import flights, planes
 
-# 1. 개요
+flight = flights.groupby('carrier')['flight'].nunique().reset_index()
+flight = flight.sort_values(by='flight', ascending=False)
 
- 목적 : 우리는 항공사로서 비행기 운항의 신뢰성과 정시성으 중요하게 고려해야합니다.
- 최근 운항 지연이 빈번하게 발생하고 있습니다.
- 다양한 요인이 있을 수 있지만, 기체 결함 및 부품 문제가 지연의 주요 원인 중 하나라는 내부 보고를 받았습니다.
- 이에 따라 제조사별 기체의 운항 지연 패턴을 분석하고, 특정 제조사의 기체에서 지연이 빈번하게 발생하는지 파악하여 운영 효율성을 개선하고자 합니다.
+# 데이터 정렬
+flight_sorted = flights.sort_values(by='flight', ascending=False)
 
-# 분석 목표 :
- 제조사별 운항 지연 패턴 분석: 어떤 제조사의 기체가 지연을 자주 유발하는지 확인.
+# 시각화
+plt.figure(figsize=(10, 6))  # 그래프 크기 조정
+plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color='skyblue')
+
+# 제목 및 축 레이블 설정
+plt.xlabel("Airline", fontsize=15, fontweight='bold')
+plt.ylabel("Number of Flights", fontsize=15, fontweight='bold')
+plt.title("Number of Flights by Airline", fontsize=20, fontweight='bold')
+plt.xticks(rotation=45)
+plt.show()
+```
+
+# 1. 운항 지연 분석 배경
+
+![](./images/catoon.png){width=700 height=700}
+
+
+# 분석 목표
+
+어떤 제조사의 기체가 지연을 자주 유발하는지 확인 후 운항 효율성 개선
+
 
 # 2. 데이터 분비 및 전처리
 
 2.1 사용하는 Python 라이브러리
 
-:::: {.columns}
-::: {.column width="50%"}
+
 
 ```{python}
 import pandas as pd

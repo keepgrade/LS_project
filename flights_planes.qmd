@@ -16,7 +16,6 @@ format:
 css: styles.css  # 🔥 CSS 파일 적용
 ---
 # 상황 설정
-![](./images/UA.png)
 
 ```{python}
 import pandas as pd
@@ -25,17 +24,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from nycflights13 import flights, planes
 
+# 항공사별 운항 편
 flight = flights.groupby('carrier')['flight'].nunique().reset_index()
-flight = flight.sort_values(by='flight', ascending=False)
-
-# 데이터 정렬
-flight_sorted = flights.sort_values(by='flight', ascending=False)
+flight_sorted = flight.sort_values(by='flight', ascending=False)
 
 # 시각화
-plt.figure(figsize=(10, 6))  # 그래프 크기 조정
+plt.figure(figsize=(10, 6))
 plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color='skyblue')
 
-# 제목 및 축 레이블 설정
 plt.xlabel("Airline", fontsize=15, fontweight='bold')
 plt.ylabel("Number of Flights", fontsize=15, fontweight='bold')
 plt.title("Number of Flights by Airline", fontsize=20, fontweight='bold')

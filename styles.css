@@ -1,0 +1,67 @@
+/* 🔹 전체 슬라이드 기본 스타일 */
+.reveal {
+    font-family: "Arial", sans-serif;  /* 글꼴 변경 */
+    font-size: 28px;  /* 기본 글자 크기 */
+    color: #ffffff;  /* 기본 글자 색상 */
+  }
+  
+  /* 🔹 제목 스타일 (title) */
+  .reveal h1 {
+    font-size: 64px;  /* 제목 크기 */
+    color: #ffcc00;  /* 제목 색상 */
+    text-align: center;  /* 제목 가운데 정렬 */
+    font-weight: bold;  /* 글자 굵게 */
+  }
+  
+  /* 🔹 부제목 스타일 (subtitle) */
+  .reveal h2 {
+    font-size: 48px;  /* 부제목 크기 */
+    color: #ff6600;  /* 부제목 색상 */
+    text-align: center;
+  }
+  
+  /* 🔹 본문 텍스트 스타일 */
+  .reveal p {
+    font-size: 24px;  /* 본문 글자 크기 */
+    color: #dddddd;  /* 본문 글자 색 */
+  }
+  
+  /* 🔹 푸터 스타일 */
+  .reveal .footer p{
+    font-size: 16px;
+    color: #aaaaaa;
+    display: inline;
+    background-color: rgba(0, 0, 0, 0.5); 
+    text-align: right;  /* 푸터 오른쪽 정렬 */
+    padding: 10px;
+  }
+  
+  /* 🔹 로고 크기 조정 */
+  .reveal .slide-logo {
+    max-height: 500px;  /* 로고 높이 조정 */
+    max-width: 500px;  /* 로고 너비 조정 */
+  }
+  
+  /* 🔹 배경 이미지 조정 */
+  .reveal .slide-background {
+    background-size: cover !important;  /* 배경 이미지 꽉 차게 */
+  }
+  
+  /* 🔹 슬라이드 번호 스타일 */
+  .reveal .slide-number {
+    font-size: 18px;
+    color: #cccccc;
+  }
+  
+  /* 🔹 첫 번째(제목) 슬라이드 전용 스타일 */
+  .reveal .title-slide {
+    text-align: center;  /* 제목 중앙 정렬 */
+    background-size: cover !important;  /* 배경 꽉 차게 */
+  }
+  
+  /* 🔹 강조된 텍스트 */
+  .important {
+    color: #ff3333;
+    font-weight: bold;
+  }
+  

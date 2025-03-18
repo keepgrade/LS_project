@@ -19,12 +19,8 @@ flights.info()
 planes.info()
 
 
-# 항공사별 운항 편 시각화
-# 항공사별 운항 편
+# 항공사별 운항 편 시각화s
 flight = flights.groupby('carrier')['flight'].nunique().reset_index()
-flight = flight.sort_values(by='flight', ascending=False)
-
-# 데이터 정렬
 flight_sorted = flight.sort_values(by='flight', ascending=False)
 
 # 시각화

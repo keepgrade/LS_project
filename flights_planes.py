@@ -38,7 +38,19 @@ df.info()
 
 
 # 2. 데이터 분비 및 전처리
+# 2.1 사용하는 Python 라이브러리
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from nycflights13 import flights, planes
+
+
+
 # 2.1 데이터 병합 
+
+
+
 # 두 데이터를 tailnum(기체 등록번호) 기준으로 병합하여 기체별 제조사 정보를 결합
 df = pd.merge(flights, planes, on='tailnum', how='left')
 

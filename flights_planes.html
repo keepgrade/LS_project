@@ -147,46 +147,22 @@ Team F5 : 정의주, 한지수, 신태선
 
 <section id="개요" class="title-slide slide level1 center">
 <h1>1. 개요</h1>
-
-</section>
-
-<section id="목적-우리는-항공사로서-비행기-운항의-신뢰성과-정시성으-중요하게-고려해야합니다." class="title-slide slide level1 center">
-<h1>목적 : 우리는 항공사로서 비행기 운항의 신뢰성과 정시성으 중요하게 고려해야합니다.</h1>
-
-</section>
-
-<section id="최근-운항-지연이-빈번하게-발생하고-있습니다." class="title-slide slide level1 center">
-<h1>최근 운항 지연이 빈번하게 발생하고 있습니다.</h1>
-
-</section>
-
-<section id="다양한-요인이-있을-수-있지만-기체-결함-및-부품-문제가-지연의-주요-원인-중-하나라는-내부-보고를-받았습니다." class="title-slide slide level1 center">
-<h1>다양한 요인이 있을 수 있지만, 기체 결함 및 부품 문제가 지연의 주요 원인 중 하나라는 내부 보고를 받았습니다.</h1>
-
-</section>
-
-<section id="이에-따라-제조사별-기체의-운항-지연-패턴을-분석하고-특정-제조사의-기체에서-지연이-빈번하게-발생하는지-파악하여-운영-효율성을-개선하고자-합니다." class="title-slide slide level1 center">
-<h1>이에 따라 제조사별 기체의 운항 지연 패턴을 분석하고, 특정 제조사의 기체에서 지연이 빈번하게 발생하는지 파악하여 운영 효율성을 개선하고자 합니다.</h1>
-
+<p>목적 : 우리는 항공사로서 비행기 운항의 신뢰성과 정시성으 중요하게 고려해야합니다. 최근 운항 지연이 빈번하게 발생하고 있습니다. 다양한 요인이 있을 수 있지만, 기체 결함 및 부품 문제가 지연의 주요 원인 중 하나라는 내부 보고를 받았습니다. 이에 따라 제조사별 기체의 운항 지연 패턴을 분석하고, 특정 제조사의 기체에서 지연이 빈번하게 발생하는지 파악하여 운영 효율성을 개선하고자 합니다.</p>
 </section>
 
 <section id="분석-목표" class="title-slide slide level1 center">
 <h1>분석 목표 :</h1>
-
-</section>
-
-<section id="제조사별-운항-지연-패턴-분석-어떤-제조사의-기체가-지연을-자주-유발하는지-확인." class="title-slide slide level1 center">
-<h1>제조사별 운항 지연 패턴 분석: 어떤 제조사의 기체가 지연을 자주 유발하는지 확인.</h1>
-
+<p>제조사별 운항 지연 패턴 분석: 어떤 제조사의 기체가 지연을 자주 유발하는지 확인.</p>
 </section>
 
 <section>
-<section id="데이터-로드" class="title-slide slide level1 center">
-<h1>데이터 로드</h1>
-<ul>
-<li>사용하는 Python 라이브러리</li>
-</ul>
-<div id="305b2a32" class="cell" data-execution_count="2">
+<section id="데이터-분비-및-전처리" class="title-slide slide level1 center">
+<h1>2. 데이터 분비 및 전처리</h1>
+<p>2.1 사용하는 Python 라이브러리</p>
+</section>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div id="7e7f5be4" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 336776 entries, 0 to 336775
@@ -232,7 +208,12 @@ dtypes: float64(2), int64(2), object(5)
 memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
-<div id="085b3554" class="cell" data-execution_count="3">
+<section id="데이터-병합" class="title-slide slide level1 center">
+<h1>2.2 데이터 병합</h1>
+<ul>
+<li>두 데이터를 tailnum(기체 등록번호) 기준으로 병합하여 기체별 제조사 정보를 결합</li>
+</ul>
+<div id="f1a0f495" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 336776 entries, 0 to 336775
@@ -271,43 +252,184 @@ memory usage: 69.4+ MB</code></pre>
 </div>
 </div>
 </section>
-<section id="첫-발표-페이지" class="slide level2">
-<h2>첫 발표 페이지</h2>
-<p>각 조별 첫 발표 페이지 내용 추가</p>
-<p>✈️ 🛫 🛬 🛩</p>
-<ol type="1">
-<li>ua 따라하기</li>
-<li></li>
-</ol>
-</section></section>
-<section>
-<section id="ua-항공사의" class="title-slide slide level1 center">
-<h1>UA 항공사의</h1>
-<p><strong>제조사별 기체 결함으로 인한 운항 지연 분석 및 운영 개선 방안 보고</strong></p>
+
+<section id="날짜-및-시간-데이터-생성" class="title-slide slide level1 center">
+<h1>2.2 날짜 및 시간 데이터 생성</h1>
+<p>연(year_x), 월(month), 일(day), 시(hour), 분(minute) 데이터를 조합하여 date_time 생성 2013년 1월~6월(상반기) 데이터를 필터링</p>
 </section>
-<section id="제목" class="slide level2">
-<h2>제목</h2>
-<div class="layout-sidebar layout-sidebar-right">
-<div class="panel-fill">
-<div class="columns">
-<div class="column" style="width:40%;">
-<p>contents…</p>
-</div><div class="column" style="width:60%;">
-<p>contents…</p>
-</div></div>
-<div>
+
+<section id="지연시간-관련-전처리" class="title-slide slide level1 center">
+<h1>2.3 지연시간 관련 전처리</h1>
+<p>음수 도착 지연 시간 제거 (빠른 이륙은 지연 원인이 아니므로 분석 제외) 제조사별 운항 횟수 확인 우리는 운항이 가장 많은 항공사야 우리 항공사를 골라줘</p>
 <ul>
-<li>Eat spaghetti</li>
-<li>Drink wine</li>
+<li>항공사별 운항 횟수 집계</li>
 </ul>
-</div>
-</div>
-<div class="panel-sidebar">
+<p>top_airline = df_fh[‘carrier’].value_counts().idxmax() # 운항 횟수가 가장 많은 항공사 선택</p>
+<p>df_fh_our_airline = df_fh[df_fh[‘carrier’] == top_airline] # 우리 항공사의 데이터만 필터링 df_fh_our_airline = df_fh_our_airline[df_fh_our_airline[‘dep_delay’] &gt;= 0] # 음수 제거 ```</p>
+</section>
+
+<section id="우리-항공사의-상위-5개-제조사-선정" class="title-slide slide level1 center">
+<h1>우리 항공사의 상위 5개 제조사 선정</h1>
+<p>top_5_manufacturers = df_fh_our_airline[‘manufacturer’].value_counts().head(5).index</p>
+</section>
+
+<section id="어차피-3개밖에-안쓰는구나" class="title-slide slide level1 center">
+<h1>어차피 3개밖에 안쓰는구나</h1>
+<p>set(df_fh_our_airline[‘manufacturer’])</p>
+</section>
+
+<section id="제조사별-운항-횟수-집계" class="title-slide slide level1 center">
+<h1>제조사별 운항 횟수 집계</h1>
+<p>manufacturer_counts = df_fh_our_airline[‘manufacturer’].value_counts()</p>
+</section>
+
+<section id="원형-그래프-파이-차트-생성" class="title-slide slide level1 center">
+<h1>원형 그래프 (파이 차트) 생성</h1>
+<p>plt.figure(figsize=(8, 8)) plt.pie(manufacturer_counts, labels=manufacturer_counts.index, autopct=‘%1.1f%%’, startangle=140, colors=sns.color_palette(‘pastel’)) plt.title(‘Aircraft Manufacturer Distribution for Our Airline’) plt.show()</p>
+</section>
+
+<section id="제조사별-운항-지연-분석" class="title-slide slide level1 center">
+<h1>3. 제조사별 운항 지연 분석</h1>
+
+</section>
+
+<section id="제조사별-평균-지연-시간" class="title-slide slide level1 center">
+<h1>3.1 제조사별 평균 지연 시간</h1>
+
+</section>
+
+<section id="이상치-제거를-위한-iqrinterquartile-range-계산" class="title-slide slide level1 center">
+<h1>이상치 제거를 위한 IQR(Interquartile Range) 계산</h1>
+<p>Q1 = df_fh_our_airline[‘dep_delay’].quantile(0.25) Q3 = df_fh_our_airline[‘dep_delay’].quantile(0.75) IQR = Q3 - Q1</p>
+</section>
+
+<section id="정상-범위-설정-iqr-범위-내-데이터만-유지" class="title-slide slide level1 center">
+<h1>정상 범위 설정 (IQR 범위 내 데이터만 유지)</h1>
+<p>lower_bound = Q1 - 1.5 * IQR upper_bound = Q3 + 1.5 * IQR</p>
+</section>
+
+<section id="이상치-제거" class="title-slide slide level1 center">
+<h1>이상치 제거</h1>
+<p>df_fh_our_airline = df_fh_our_airline[(df_fh_our_airline[‘dep_delay’] &gt;= lower_bound) &amp; (df_fh_our_airline[‘dep_delay’] &lt;= upper_bound)]</p>
+</section>
+
+<section id="제조사별-평균-지연-시간-및-표준편차-확인" class="title-slide slide level1 center">
+<h1>- 제조사별 평균 지연 시간 및 표준편차 확인</h1>
+<p>df_fh_our_airline.groupby(‘manufacturer’)[‘dep_delay’].describe()</p>
+</section>
+
+<section id="제조사별-운항-횟수-대비-지연-비율" class="title-slide slide level1 center">
+<h1>3.2 제조사별 운항 횟수 대비 지연 비율</h1>
+
+</section>
+
+<section id="단순-평균-지연-시간-비교가-아닌-운항-횟수-대비-지연-발생-비율-계산" class="title-slide slide level1 center">
+<h1>- 단순 평균 지연 시간 비교가 아닌, 운항 횟수 대비 지연 발생 비율 계산</h1>
+<p>delay_rate = df_fh_our_airline.groupby(‘manufacturer’)[‘dep_delay’].count() /df_fh_our_airline[‘manufacturer’].value_counts()</p>
+<p>delay_rate.sort_values(ascending=False)</p>
+</section>
+
+<section id="제조사별-이륙-vs.-도착-지연-비교" class="title-slide slide level1 center">
+<h1>3.3 제조사별 이륙 vs.&nbsp;도착 지연 비교</h1>
+
+</section>
+
+<section id="특정-제조사의-기체에서-이륙-지연이-많은지-운항-중-추가-지연이-발생하는지-분석" class="title-slide slide level1 center">
+<h1>- 특정 제조사의 기체에서 이륙 지연이 많은지, 운항 중 추가 지연이 발생하는지 분석</h1>
+<p>df_fh_our_airline.groupby(‘manufacturer’)[[‘dep_delay’]].mean()</p>
+</section>
+
+<section id="월별-지연-패턴-분석" class="title-slide slide level1 center">
+<h1>3.4 월별 지연 패턴 분석</h1>
+
+</section>
+
+<section id="제조사별-월별-평균-도착-지연-분석" class="title-slide slide level1 center">
+<h1>- 제조사별 월별 평균 도착 지연 분석</h1>
+<p>df_fh_our_airline[‘month’] = df_fh_our_airline[‘date_time’].dt.month monthly_delay = df_fh_our_airline.groupby([‘manufacturer’, ‘month’])[‘arr_delay’].mean().unstack() monthly_delay</p>
+<p>plt.figure(figsize=(12,10)) monthly_delay = df_fh_our_airline.groupby([‘manufacturer’, ‘month’])[‘dep_delay’].mean().unstack()</p>
+<p>sns.lineplot(data=monthly_delay.T, marker=“o”) plt.xlabel(“Month”) plt.ylabel(“Average Delay (minutes)”) plt.title(“Monthly Average Delay by Manufacturer”) plt.legend(title=“Manufacturer”) plt.grid(True) plt.show()</p>
+</section>
+
+<section id="데이터-시각화" class="title-slide slide level1 center">
+<h1>4. 데이터 시각화</h1>
+
+</section>
+
+<section id="제조사별-도착-지연-시간-분포" class="title-slide slide level1 center">
+<h1>4.1 제조사별 도착 지연 시간 분포</h1>
+
+</section>
+
+<section id="제조사별-평균-지연-시간-비교" class="title-slide slide level1 center">
+<h1>제조사별 평균 지연 시간 비교</h1>
+<p>mean_delays = df_fh_our_airline.groupby(‘manufacturer’)[‘dep_delay’].mean().sort_values()</p>
+<p>plt.figure(figsize=(10,5)) mean_delays.plot(kind=‘bar’, color=‘skyblue’) plt.xlabel(‘Manufacturer’) plt.ylabel(‘Mean Departure Delay (minutes)’) plt.title(‘Mean Departure Delay by Manufacturer (Jan-Jun 2013)’) plt.grid(True) plt.show()</p>
+</section>
+
+<section id="제조사별-이륙-vs.-도착-지연-비교-가로-막대-그래프" class="title-slide slide level1 center">
+<h1>4.2 제조사별 이륙 vs.&nbsp;도착 지연 비교 (가로 막대 그래프)</h1>
+<p>delay_comparison = df_fh_our_airline.groupby(‘manufacturer’)[[‘dep_delay’, ‘arr_delay’]].mean()</p>
+<p>delay_comparison.plot(kind=‘barh’, figsize=(12,6), color=[‘royalblue’, ‘tomato’]) plt.xlabel(‘Mean Delay (minutes)’) plt.ylabel(‘Manufacturer’) plt.title(‘Mean Departure vs.&nbsp;Arrival Delay by Manufacturer (Jan-Jun 2013)’) plt.legend([‘Departure Delay’, ‘Arrival Delay’]) plt.grid(True) plt.show()</p>
+</section>
+
+<section id="차원-데이터-분석을-통해서-보기" class="title-slide slide level1 center">
+<h1>4.3 3차원 데이터 분석을 통해서 보기</h1>
+
+</section>
+
+<section id="제조사별-평균-이륙-지연-도착-지연-및-운행-대수-데이터-준비" class="title-slide slide level1 center">
+<h1>제조사별 평균 이륙 지연, 도착 지연 및 운행 대수 데이터 준비</h1>
+<p>delay_comparison = df_fh_our_airline.groupby(‘manufacturer’)[[‘dep_delay’, ‘arr_delay’]].mean() manufacturer_flight_counts = df_fh_our_airline[‘manufacturer’].value_counts()</p>
+</section>
+
+<section id="데이터-병합-1" class="title-slide slide level1 center">
+<h1>데이터 병합</h1>
+<p>delay_comparison[‘flight_count’] = manufacturer_flight_counts</p>
+</section>
+
+<section id="d-그래프-생성" class="title-slide slide level1 center">
+<h1>3D 그래프 생성</h1>
+<p>fig = plt.figure(figsize=(12, 8)) ax = fig.add_subplot(111, projection=‘3d’)</p>
+</section>
+
+<section id="x-y-z-좌표-설정" class="title-slide slide level1 center">
+<h1>x, y, z 좌표 설정</h1>
+<p>x_labels = delay_comparison.index # 제조사 목록 x = np.arange(len(x_labels)) # x축 인덱스 (제조사별) y_dep = delay_comparison[‘dep_delay’] # 이륙 지연 y_arr = delay_comparison[‘arr_delay’] # 도착 지연 z = delay_comparison[‘flight_count’] # 운행 대수</p>
+</section>
+
+<section id="막대-너비-설정" class="title-slide slide level1 center">
+<h1>막대 너비 설정</h1>
+<p>bar_width = 0.3</p>
+</section>
+
+<section id="d-막대-그래프-형태로-시각화-조금-더-정교한-스타일-적용" class="title-slide slide level1 center">
+<h1>3D 막대 그래프 형태로 시각화 (조금 더 정교한 스타일 적용)</h1>
+<p>ax.bar(x - bar_width, y_dep, zs=z, zdir=‘y’, color=‘royalblue’, alpha=0.8, width=bar_width, label=‘Departure Delay’) ax.bar(x + bar_width, y_arr, zs=z, zdir=‘y’, color=‘tomato’, alpha=0.8, width=bar_width, label=‘Arrival Delay’)</p>
+</section>
+
+<section id="축-설정-및-시각적-개선" class="title-slide slide level1 center">
+<h1>축 설정 및 시각적 개선</h1>
+<p>ax.set_xlabel(‘Manufacturer’, fontsize=12, labelpad=15, color = ‘red’) ax.set_ylabel(‘Total Flights Operated’, fontsize=12, labelpad=15) ax.set_zlabel(‘Mean Delay (minutes)’, fontsize=12, labelpad=15) ax.set_xticks(x) ax.set_xticklabels(x_labels, rotation=45, fontsize=10, ha=‘right’) ax.set_title(‘3D Visualization of Mean Departure &amp; Arrival Delay by Manufacturer’, fontsize=14, pad=20) ax.view_init(elev=20, azim=120) # 시점 조정</p>
+</section>
+
+<section id="범례-추가" class="title-slide slide level1 center">
+<h1>범례 추가</h1>
+<p>ax.legend()</p>
+</section>
+
+<section id="그래프-출력" class="title-slide slide level1 center">
+<h1>그래프 출력</h1>
+<p>plt.show()</p>
+</section>
+
+<section id="결론-및-운영-개선-방안" class="title-slide slide level1 center">
+<h1>5. 결론 및 운영 개선 방안</h1>
+
+</section>
 
 </div>
-</div>
-
-</section></section>
+</div></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/logo.png" class="slide-logo"></p>

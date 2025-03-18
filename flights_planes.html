@@ -205,33 +205,33 @@ Team F5 : 정의주, 한지수, 신태선
 </div>
 
 </section>
-<section id="상황-설정" class="title-slide slide level1 center">
-<h1>상황 설정</h1>
-<div id="090b50ef" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
-<div>
-<figure>
-<p><img data-src="flights_planes_files/figure-revealjs/cell-2-output-1.png" width="832" height="551"></p>
-</figure>
+<section id="운항-지연-분석-배경" class="slide level2 text-center">
+<h2>1. 운항 지연 분석 배경</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>✈️ UA 항공사 항공기 지연 분석</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>어떤 제조사의 항공기가 지연을 자주 유발하는가?</strong><br>
+</li>
+<li><strong>운항 효율성을 향상시키기 위한 방안은 무엇인가?</strong></li>
+</ul>
 </div>
 </div>
 </div>
+<p><img data-src="./images/catoon.png" width="800" height="400"></p>
+<p>/개선사항/ 가로로 두개 배열 하기</p>
 </section>
-
-<section id="운항-지연-분석-배경" class="title-slide slide level1 center">
-<h1>1. 운항 지연 분석 배경</h1>
-<p><img data-src="./images/catoon.png" width="700" height="700"></p>
-</section>
-
-<section id="분석-목표" class="title-slide slide level1 center">
-<h1>분석 목표</h1>
-<p>어떤 제조사의 기체가 지연을 자주 유발하는지 확인 후 운항 효율성 개선</p>
-</section>
-
-<section id="데이터-분비-및-전처리" class="title-slide slide level1 center">
-<h1>2. 데이터 분비 및 전처리</h1>
-<p>2.1 사용하는 Python 라이브러리</p>
-<div id="0c2d2819" class="cell" data-execution_count="3">
+<section id="데이터-정보" class="slide level2">
+<h2>2.1 데이터 정보</h2>
+<div class="column" style="margin-top:100px;">
+<div id="970ecd6c" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a>flights.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 336776 entries, 0 to 336775
@@ -258,8 +258,14 @@ Data columns (total 19 columns):
  17  minute          336776 non-null  int64  
  18  time_hour       336776 non-null  object 
 dtypes: float64(5), int64(9), object(5)
-memory usage: 48.8+ MB
-&lt;class 'pandas.core.frame.DataFrame'&gt;
+memory usage: 48.8+ MB</code></pre>
+</div>
+</div>
+</div><div class="column" style="margin-top:100px;">
+<div id="d9b8445b" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>planes.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 3322 entries, 0 to 3321
 Data columns (total 9 columns):
  #   Column        Non-Null Count  Dtype  
@@ -277,275 +283,269 @@ dtypes: float64(2), int64(2), object(5)
 memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
-</section>
-
-<section id="데이터-병합" class="title-slide slide level1 center">
-<h1>2.2 데이터 병합</h1>
+</div></section>
+<section id="데이터-전처리" class="slide level2">
+<h2>2.2 데이터 전처리</h2>
 <ul>
-<li>두 데이터를 tailnum(기체 등록번호) 기준으로 병합하여 기체별 제조사 정보를 결합</li>
+<li>두 데이터를 tailnum 기준으로 병합하여 기체별 제조사 정보를 결합</li>
 </ul>
-<div id="7748db6e" class="cell" data-execution_count="4">
+<div id="8b2ad677" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="co"># tailnum을 key로 merge 하기 </span></span>
+<span id="cb5-2"><a href=""></a>df <span class="op">=</span> pd.merge(flights, planes, on <span class="op">=</span> <span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb5-3"><a href=""></a><span class="bu">print</span>(<span class="st">"병합된 데이터 :"</span>, <span class="bu">len</span>(df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 336776 entries, 0 to 336775
-Data columns (total 27 columns):
- #   Column          Non-Null Count   Dtype  
----  ------          --------------   -----  
- 0   year_x          336776 non-null  int64  
- 1   month           336776 non-null  int64  
- 2   day             336776 non-null  int64  
- 3   dep_time        328521 non-null  float64
- 4   sched_dep_time  336776 non-null  int64  
- 5   dep_delay       328521 non-null  float64
- 6   arr_time        328063 non-null  float64
- 7   sched_arr_time  336776 non-null  int64  
- 8   arr_delay       327346 non-null  float64
- 9   carrier         336776 non-null  object 
- 10  flight          336776 non-null  int64  
- 11  tailnum         334264 non-null  object 
- 12  origin          336776 non-null  object 
- 13  dest            336776 non-null  object 
- 14  air_time        327346 non-null  float64
- 15  distance        336776 non-null  int64  
- 16  hour            336776 non-null  int64  
- 17  minute          336776 non-null  int64  
- 18  time_hour       336776 non-null  object 
- 19  year_y          278864 non-null  float64
- 20  type            284170 non-null  object 
- 21  manufacturer    284170 non-null  object 
- 22  model           284170 non-null  object 
- 23  engines         284170 non-null  float64
- 24  seats           284170 non-null  float64
- 25  speed           963 non-null     float64
- 26  engine          284170 non-null  object 
-dtypes: float64(9), int64(9), object(9)
-memory usage: 69.4+ MB</code></pre>
+<pre><code>병합된 데이터 : 336776</code></pre>
 </div>
 </div>
-</section>
-
-<section id="날짜-및-시간-데이터-생성" class="title-slide slide level1 center">
-<h1>2.2 날짜 및 시간 데이터 생성</h1>
-<p>연(year_x), 월(month), 일(day), 시(hour), 분(minute) 데이터를 조합하여 date_time 생성 2013년 1월~6월(상반기) 데이터를 필터링</p>
-</section>
-
-<section id="지연시간-관련-전처리" class="title-slide slide level1 center">
-<h1>2.3 지연시간 관련 전처리</h1>
-<p>음수 도착 지연 시간 제거 (빠른 이륙은 지연 원인이 아니므로 분석 제외) 제조사별 운항 횟수 확인 우리는 운항이 가장 많은 항공사야 우리 항공사를 골라줘</p>
+<div id="ad8b09df" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-6-output-1.png" width="832" height="256"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li>항공사별 운항 횟수 집계</li>
+<li>UA 항공사(우리 회사: 운행량 1위) 데이터만 가져오기</li>
 </ul>
-<p>top_airline = df_fh[‘carrier’].value_counts().idxmax() # 운항 횟수가 가장 많은 항공사 선택</p>
-<p>df_fh_our_airline = df_fh[df_fh[‘carrier’] == top_airline] # 우리 항공사의 데이터만 필터링 df_fh_our_airline = df_fh_our_airline[df_fh_our_airline[‘dep_delay’] &gt;= 0] # 음수 제거</p>
-<pre><code>
-
-
-# 우리 항공사의 상위 5개 제조사 선정
-
-
-```{python}
-top_5_manufacturers = df_fh_our_airline['manufacturer'].value_counts().head(5).index</code></pre>
+<div id="ef6ca2b5" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>df  <span class="op">=</span> df[df[<span class="st">'carrier'</span>]<span class="op">==</span><span class="st">'UA'</span>]</span>
+<span id="cb7-2"><a href=""></a>df_len <span class="op">=</span> <span class="bu">len</span>(df)</span>
+<span id="cb7-3"><a href=""></a><span class="bu">print</span>(<span class="st">"UA 항공사의 운행량 :"</span>, df_len)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>UA 항공사의 운행량 : 58665</code></pre>
+</div>
+</div>
 </section>
-
-<section id="어차피-3개밖에-안쓰는구나" class="title-slide slide level1 center">
-<h1>어차피 3개밖에 안쓰는구나</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href=""></a>set(df_fh_our_airline['manufacturer'])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="날짜-및-시간-데이터-추가" class="slide level2">
+<h2>2.3 날짜 및 시간 데이터 추가</h2>
+<ul>
+<li>연, 월, 일, 시, 분 데이터를 조합해 date_time 생성</li>
+</ul>
+<div id="e92fe3a9" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>df[<span class="st">'date_time'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'year_x'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'month'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'day'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">' '</span> <span class="op">+</span> df[<span class="st">'hour'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">':'</span> <span class="op">+</span> df[<span class="st">'minute'</span>].astype(<span class="bu">str</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>2013년 1월~6월(상반기) 데이터를 필터링</li>
+</ul>
+<div id="bc1efb5e" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>df_fh <span class="op">=</span>df</span>
+<span id="cb10-2"><a href=""></a><span class="co">#df_fh = df[(df['date_time'] &gt;= '2013-01-01') &amp; (df['date_time'] &lt;= '2013-06-30')]</span></span>
+<span id="cb10-3"><a href=""></a><span class="co">#first_half = len(df_fh)</span></span>
+<span id="cb10-4"><a href=""></a><span class="co">#print("f {df_len}=&gt;{fisrt_half}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>빠른 이륙은 지연 원인이 아니므로 0으로 변경</li>
+</ul>
+<div id="0561c59a" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="co">#0보다 작으면 0이라고 하기 </span></span>
+<span id="cb11-2"><a href=""></a>df_fh[<span class="st">'dep_delay'</span>] <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> x)</span>
+<span id="cb11-3"><a href=""></a></span>
+<span id="cb11-4"><a href=""></a>zero_df_fh <span class="op">=</span> <span class="bu">len</span>(df_fh)</span>
+<span id="cb11-5"><a href=""></a><span class="co"># 변환 후 데이터 크기 출력</span></span>
+<span id="cb11-6"><a href=""></a><span class="bu">print</span>(zero_df_fh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>58665</code></pre>
+</div>
+</div>
 </section>
-
-<section id="제조사별-운항-횟수-집계" class="title-slide slide level1 center">
-<h1>제조사별 운항 횟수 집계</h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href=""></a>manufacturer_counts = df_fh_our_airline['manufacturer'].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="원형-그래프-파이-차트-생성" class="title-slide slide level1 center">
-<h1>원형 그래프 (파이 차트) 생성</h1>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href=""></a>plt.figure(figsize=(8, 8))</span>
-<span id="cb6-2"><a href=""></a>plt.pie(manufacturer_counts, labels=manufacturer_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))</span>
-<span id="cb6-3"><a href=""></a>plt.title('Aircraft Manufacturer Distribution for Our Airline')</span>
-<span id="cb6-4"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="제조사별-운항-지연-분석" class="title-slide slide level1 center">
-<h1>3. 제조사별 운항 지연 분석</h1>
-
-</section>
-
-<section id="제조사별-평균-지연-시간" class="title-slide slide level1 center">
-<h1>3.1 제조사별 평균 지연 시간</h1>
-
-</section>
-
-<section id="이상치-제거를-위한-iqrinterquartile-range-계산" class="title-slide slide level1 center">
-<h1>이상치 제거를 위한 IQR(Interquartile Range) 계산</h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href=""></a>Q1 = df_fh_our_airline['dep_delay'].quantile(0.25)</span>
-<span id="cb7-2"><a href=""></a>Q3 = df_fh_our_airline['dep_delay'].quantile(0.75)</span>
-<span id="cb7-3"><a href=""></a>IQR = Q3 - Q1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="정상-범위-설정-iqr-범위-내-데이터만-유지" class="title-slide slide level1 center">
-<h1>정상 범위 설정 (IQR 범위 내 데이터만 유지)</h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href=""></a>lower_bound = Q1 - 1.5 * IQR</span>
-<span id="cb8-2"><a href=""></a>upper_bound = Q3 + 1.5 * IQR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="이상치-제거" class="title-slide slide level1 center">
-<h1>이상치 제거</h1>
-<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href=""></a>df_fh_our_airline = df_fh_our_airline[(df_fh_our_airline['dep_delay'] &gt;= lower_bound) &amp; (df_fh_our_airline['dep_delay'] &lt;= upper_bound)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="제조사별-평균-지연-시간-및-표준편차-확인" class="title-slide slide level1 center">
-<h1>- 제조사별 평균 지연 시간 및 표준편차 확인</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a href=""></a>df_fh_our_airline.groupby('manufacturer')['dep_delay'].describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="제조사별-운항-횟수-대비-지연-비율" class="title-slide slide level1 center">
-<h1>3.2 제조사별 운항 횟수 대비 지연 비율</h1>
-
-</section>
-
-<section id="단순-평균-지연-시간-비교가-아닌-운항-횟수-대비-지연-발생-비율-계산" class="title-slide slide level1 center">
-<h1>- 단순 평균 지연 시간 비교가 아닌, 운항 횟수 대비 지연 발생 비율 계산</h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href=""></a>delay_rate = df_fh_our_airline.groupby('manufacturer')['dep_delay'].count() /df_fh_our_airline['manufacturer'].value_counts()</span>
-<span id="cb11-2"><a href=""></a></span>
-<span id="cb11-3"><a href=""></a>delay_rate.sort_values(ascending=False)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="제조사별-이륙-vs.-도착-지연-비교" class="title-slide slide level1 center">
-<h1>3.3 제조사별 이륙 vs.&nbsp;도착 지연 비교</h1>
-
-</section>
-
-<section id="특정-제조사의-기체에서-이륙-지연이-많은지-운항-중-추가-지연이-발생하는지-분석" class="title-slide slide level1 center">
-<h1>- 특정 제조사의 기체에서 이륙 지연이 많은지, 운항 중 추가 지연이 발생하는지 분석</h1>
-<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a href=""></a>df_fh_our_airline.groupby('manufacturer')[['dep_delay']].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="월별-지연-패턴-분석" class="title-slide slide level1 center">
-<h1>3.4 월별 지연 패턴 분석</h1>
-
-</section>
-
-<section id="제조사별-월별-평균-도착-지연-분석" class="title-slide slide level1 center">
-<h1>- 제조사별 월별 평균 도착 지연 분석</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href=""></a>df_fh_our_airline['month'] = df_fh_our_airline['date_time'].dt.month</span>
-<span id="cb13-2"><a href=""></a>monthly_delay = df_fh_our_airline.groupby(['manufacturer', 'month'])['arr_delay'].mean().unstack()</span>
-<span id="cb13-3"><a href=""></a>monthly_delay</span>
+<section id="이상치-제거" class="slide level2">
+<h2>2.4 이상치 제거</h2>
+<ul>
+<li>이상치 제거를 위한 IQR(Interquartile Range) 계산</li>
+</ul>
+<div id="818bc33f" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>Q1 <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].quantile(<span class="fl">0.25</span>)</span>
+<span id="cb13-2"><a href=""></a>Q3 <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].quantile(<span class="fl">0.75</span>)</span>
+<span id="cb13-3"><a href=""></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
 <span id="cb13-4"><a href=""></a></span>
-<span id="cb13-5"><a href=""></a>plt.figure(figsize=(12,10))</span>
-<span id="cb13-6"><a href=""></a>monthly_delay = df_fh_our_airline.groupby(['manufacturer', 'month'])['dep_delay'].mean().unstack()</span>
-<span id="cb13-7"><a href=""></a></span>
-<span id="cb13-8"><a href=""></a>sns.lineplot(data=monthly_delay.T, marker="o")</span>
-<span id="cb13-9"><a href=""></a>plt.xlabel("Month")</span>
-<span id="cb13-10"><a href=""></a>plt.ylabel("Average Delay (minutes)")</span>
-<span id="cb13-11"><a href=""></a>plt.title("Monthly Average Delay by Manufacturer")</span>
-<span id="cb13-12"><a href=""></a>plt.legend(title="Manufacturer")</span>
-<span id="cb13-13"><a href=""></a>plt.grid(True)</span>
-<span id="cb13-14"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-5"><a href=""></a></span>
+<span id="cb13-6"><a href=""></a>lower_bound <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb13-7"><a href=""></a>upper_bound <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb13-8"><a href=""></a></span>
+<span id="cb13-9"><a href=""></a>df_fh <span class="op">=</span> df_fh[(df_fh[<span class="st">'dep_delay'</span>] <span class="op">&gt;=</span> lower_bound) <span class="op">&amp;</span> (df_fh[<span class="st">'dep_delay'</span>] <span class="op">&lt;=</span> upper_bound)]</span>
+<span id="cb13-10"><a href=""></a>iqr_del_df <span class="op">=</span> <span class="bu">len</span>(df_fh)</span>
+<span id="cb13-11"><a href=""></a></span>
+<span id="cb13-12"><a href=""></a><span class="bu">print</span>(Q1, Q3)</span>
+<span id="cb13-13"><a href=""></a><span class="bu">print</span>(<span class="st">"f </span><span class="sc">{zero_df_fh}</span><span class="st"> =&gt; </span><span class="sc">{iqr_del_df}</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.0 11.0
+f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
+</div>
+</div>
 </section>
-
-<section id="데이터-시각화" class="title-slide slide level1 center">
-<h1>4. 데이터 시각화</h1>
-
+<section id="제조사별-평균-및-중앙값-지연-시간-분석" class="slide level2">
+<h2>3.2 제조사별 평균 및 중앙값 지연 시간 분석</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>⏳ 제조사별 평균 지연 시간 &amp; 중앙값 지연 시간 비교</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>특정 제조사의 항공기가 평균적으로 더 오랫동안 지연되는가?</strong><br>
+</li>
+<li><strong>평균(Mean)과 중앙값(Median)을 비교하여 이상치(outlier)의 영향을 확인</strong><br>
+</li>
+<li><strong>보잉(Boeing) 제조사가 강조되도록 정렬</strong><br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="5b881dc3" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-12-output-1.png" class="quarto-figure quarto-figure-center" width="662" height="465"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
+<section id="제조사-데이터-처리" class="slide level2">
+<h2>3.2 제조사 데이터 처리</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>UA 항공사가 운행하는 비행기의 제조사의 비율</strong></p>
+</div>
+<div class="callout-content">
 
-<section id="제조사별-도착-지연-시간-분포" class="title-slide slide level1 center">
-<h1>4.1 제조사별 도착 지연 시간 분포</h1>
-
+</div>
+</div>
+</div>
+<div id="88957616" class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-13-output-1.png" class="quarto-figure quarto-figure-center" width="430" height="409"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-
-<section id="제조사별-평균-지연-시간-비교" class="title-slide slide level1 center">
-<h1>제조사별 평균 지연 시간 비교</h1>
-<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb14-1"><a href=""></a>mean_delays = df_fh_our_airline.groupby('manufacturer')['dep_delay'].mean().sort_values()</span>
-<span id="cb14-2"><a href=""></a></span>
-<span id="cb14-3"><a href=""></a>plt.figure(figsize=(10,5))</span>
-<span id="cb14-4"><a href=""></a>mean_delays.plot(kind='bar', color='skyblue')</span>
-<span id="cb14-5"><a href=""></a>plt.xlabel('Manufacturer')</span>
-<span id="cb14-6"><a href=""></a>plt.ylabel('Mean Departure Delay (minutes)')</span>
-<span id="cb14-7"><a href=""></a>plt.title('Mean Departure Delay by Manufacturer (Jan-Jun 2013)')</span>
-<span id="cb14-8"><a href=""></a>plt.grid(True)</span>
-<span id="cb14-9"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="제조사별-지연-발생-빈도-분석" class="slide level2">
+<h2>3.3 제조사별 지연 발생 빈도 분석</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>🚀 제조사별 지연 발생 횟수 및 비율</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>어떤 제조사의 항공기가 가장 많이 지연되는가?</strong><br>
+</li>
+<li><strong>전체 운항 대비 지연 비율은 제조사별로 차이가 있는가?</strong><br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="0c057ac1" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-14-output-1.png" class="quarto-figure quarto-figure-center" width="883" height="443"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-
-<section id="제조사별-이륙-vs.-도착-지연-비교-가로-막대-그래프" class="title-slide slide level1 center">
-<h1>4.2 제조사별 이륙 vs.&nbsp;도착 지연 비교 (가로 막대 그래프)</h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a href=""></a>delay_comparison = df_fh_our_airline.groupby('manufacturer')[['dep_delay', 'arr_delay']].mean()</span>
-<span id="cb15-2"><a href=""></a></span>
-<span id="cb15-3"><a href=""></a>delay_comparison.plot(kind='barh', figsize=(12,6), color=['royalblue', 'tomato'])</span>
-<span id="cb15-4"><a href=""></a>plt.xlabel('Mean Delay (minutes)')</span>
-<span id="cb15-5"><a href=""></a>plt.ylabel('Manufacturer')</span>
-<span id="cb15-6"><a href=""></a>plt.title('Mean Departure vs. Arrival Delay by Manufacturer (Jan-Jun 2013)')</span>
-<span id="cb15-7"><a href=""></a>plt.legend(['Departure Delay', 'Arrival Delay'])</span>
-<span id="cb15-8"><a href=""></a>plt.grid(True)</span>
-<span id="cb15-9"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section>
+<section id="결론-정리" class="title-slide slide level1 center">
+<h1>결론 정리</h1>
+<ol type="1">
+<li>제조사별 평균 지연 시간, 중앙값은 비슷하다.</li>
+<li>우리 항공사가 운행하는 비행기의 제조사 비율은 보잉이 72.2로 압도적이다.</li>
+<li>또 제조사별 지연 발생 빈도를 분석했을 때 보잉사의 비행기가 42%로 가장 높은 비율을 보여준다.</li>
+<li>따라서 우리는 한정된 자원으로 효율적인 항공사 운행을 위해서</li>
+<li>공항에 보잉사 정비 요원을 더 많이 배치하여, 예방 정비를 철지히 하도록 해야한다.</li>
+<li>아니면 발생 빈도를 바탕으로 3개의 회사별 비용을 산정하여 배분다.</li>
+</ol>
 </section>
-
-<section id="차원-데이터-분석을-통해서-보기" class="title-slide slide level1 center">
-<h1>4.3 3차원 데이터 분석을 통해서 보기</h1>
-
+<section id="제조사별-월별-지연-패턴-분석" class="slide level2">
+<h2>3.3 제조사별 월별 지연 패턴 분석</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>📅 제조사별 월별 평균 지연 시간 분석</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>제조사별로 특정 월에 더 지연이 많이 발생하는가?</strong><br>
+</li>
+<li><strong>날씨(겨울 폭설, 여름 태풍 등)가 영향을 주는지 분석 가능</strong><br>
+</li>
+<li><strong>보잉(Boeing) 제조사가 강조되도록 정렬 및 스타일 조정</strong><br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="cf9e5280" class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-15-output-1.png" class="quarto-figure quarto-figure-center" width="951" height="380"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<section id="제조사별-평균-이륙-지연-도착-지연-및-운행-대수-데이터-준비" class="title-slide slide level1 center">
-<h1>제조사별 평균 이륙 지연, 도착 지연 및 운행 대수 데이터 준비</h1>
-<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a href=""></a>delay_comparison = df_fh_our_airline.groupby('manufacturer')[['dep_delay', 'arr_delay']].mean()</span>
-<span id="cb16-2"><a href=""></a>manufacturer_flight_counts = df_fh_our_airline['manufacturer'].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="제조사별-운행-대수-vs.-평균-지연-시간-vs.-지연-비율-3d-분석" class="slide level2">
+<h2>3.4 제조사별 운행 대수 vs.&nbsp;평균 지연 시간 vs.&nbsp;지연 비율 (3D 분석)</h2>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>📊 제조사별 운행 대수, 평균 지연 시간, 지연 비율 3D 시각화</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>운항 대수가 많을수록 지연이 많아지는가?</strong><br>
+</li>
+<li><strong>특정 제조사가 더 효율적으로 운항하는가?</strong><br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="1389ccde" class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-16-output-1.png" class="quarto-figure quarto-figure-center" width="330" height="384"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
+<section id="section" class="slide level2">
+<h2>4.</h2>
 
-<section id="데이터-병합-1" class="title-slide slide level1 center">
-<h1>데이터 병합</h1>
-<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb17-1"><a href=""></a>delay_comparison['flight_count'] = manufacturer_flight_counts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="d-그래프-생성" class="title-slide slide level1 center">
-<h1>3D 그래프 생성</h1>
-<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb18-1"><a href=""></a>fig = plt.figure(figsize=(12, 8))</span>
-<span id="cb18-2"><a href=""></a>ax = fig.add_subplot(111, projection='3d')</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="x-y-z-좌표-설정" class="title-slide slide level1 center">
-<h1>x, y, z 좌표 설정</h1>
-<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb19-1"><a href=""></a>x_labels = delay_comparison.index  # 제조사 목록</span>
-<span id="cb19-2"><a href=""></a>x = np.arange(len(x_labels))  # x축 인덱스 (제조사별)</span>
-<span id="cb19-3"><a href=""></a>y_dep = delay_comparison['dep_delay']  # 이륙 지연</span>
-<span id="cb19-4"><a href=""></a>y_arr = delay_comparison['arr_delay']  # 도착 지연</span>
-<span id="cb19-5"><a href=""></a>z = delay_comparison['flight_count']  # 운행 대수</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="막대-너비-설정" class="title-slide slide level1 center">
-<h1>막대 너비 설정</h1>
-<div class="sourceCode" id="cb20"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb20-1"><a href=""></a>bar_width = 0.3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="d-막대-그래프-형태로-시각화-조금-더-정교한-스타일-적용" class="title-slide slide level1 center">
-<h1>3D 막대 그래프 형태로 시각화 (조금 더 정교한 스타일 적용)</h1>
-<div class="sourceCode" id="cb21"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb21-1"><a href=""></a>ax.bar(x - bar_width, y_dep, zs=z, zdir='y', color='royalblue', alpha=0.8, width=bar_width, label='Departure Delay')</span>
-<span id="cb21-2"><a href=""></a>ax.bar(x + bar_width, y_arr, zs=z, zdir='y', color='tomato', alpha=0.8, width=bar_width, label='Arrival Delay')</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="축-설정-및-시각적-개선" class="title-slide slide level1 center">
-<h1>축 설정 및 시각적 개선</h1>
-<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb22-1"><a href=""></a>ax.set_xlabel('Manufacturer', fontsize=12, labelpad=15, color = 'red')</span>
-<span id="cb22-2"><a href=""></a>ax.set_ylabel('Total Flights Operated', fontsize=12, labelpad=15)</span>
-<span id="cb22-3"><a href=""></a>ax.set_zlabel('Mean Delay (minutes)', fontsize=12, labelpad=15)</span>
-<span id="cb22-4"><a href=""></a>ax.set_xticks(x)</span>
-<span id="cb22-5"><a href=""></a>ax.set_xticklabels(x_labels, rotation=45, fontsize=10, ha='right')</span>
-<span id="cb22-6"><a href=""></a>ax.set_title('3D Visualization of Mean Departure &amp; Arrival Delay by Manufacturer', fontsize=14, pad=20)</span>
-<span id="cb22-7"><a href=""></a>ax.view_init(elev=20, azim=120)  # 시점 조정</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="범례-추가" class="title-slide slide level1 center">
-<h1>범례 추가</h1>
-<div class="sourceCode" id="cb23"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb23-1"><a href=""></a>ax.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="그래프-출력" class="title-slide slide level1 center">
-<h1>그래프 출력</h1>
-<div class="sourceCode" id="cb24"><pre class="sourceCode numberSource {python} number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-
-<section id="결론-및-운영-개선-방안" class="title-slide slide level1 center">
-<h1>5. 결론 및 운영 개선 방안</h1>
-
-</section>
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/logo.png" class="slide-logo"></p>

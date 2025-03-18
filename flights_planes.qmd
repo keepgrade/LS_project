@@ -13,23 +13,70 @@ format:
     logo: "images/logo.png"
     slide-number: true
     theme: night  # 내장 테마 적용
+    html: 
+      code-fold: true  # (선택) 코드 접기 기능 추가
+execute:
+  echo: true  # 기본적으로 코드와 결과 모두 표시
+  warning: false  # (선택) 경고 메시지 숨기기
 css: styles.css  # 🔥 CSS 파일 적용
 ---
-# 상황 설정
 
 ```{python}
+#| echo : false 
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from nycflights13 import flights, planes
 
+```
+
+## 1. 운항 지연 분석 배경 {.text-center}
+
+::: {.callout-note appearance="simple"}
+
+### ✈️ UA 항공사 항공기 지연 분석
+- **어떤 제조사의 항공기가 지연을 자주 유발하는가?**  
+- **운항 효율성을 향상시키기 위한 방안은 무엇인가?**
+:::
+
+![](./images/catoon.png){width=800 height=400}
+
+
+/개선사항/ 가로로 두개 배열 하기 
+
+## 2.1 데이터 정보
+
+::: {.column width="50%" style="margin-top:100px;"}
+```{python}
+flights.info()
+```
+:::
+::: {.column width="50%" style="margin-top:100px;"}
+
+```{python}
+planes.info()
+```
+:::
+
+## 2.2 데이터 전처리
+
+- 두 데이터를 tailnum 기준으로 병합하여 기체별 제조사 정보를 결합
+```{python}
+# tailnum을 key로 merge 하기 
+df = pd.merge(flights, planes, on = 'tailnum', how='left')
+print("병합된 데이터 :", len(df))
+```
+
+```{python}
+#| echo : false 
+
 # 항공사별 운항 편
 flight = flights.groupby('carrier')['flight'].nunique().reset_index()
 flight_sorted = flight.sort_values(by='flight', ascending=False)
 
 # 시각화
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(10, 2))
 plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color='skyblue')
 
 plt.xlabel("Airline", fontsize=15, fontweight='bold')
@@ -39,289 +86,330 @@ plt.xticks(rotation=45)
 plt.show()
 ```
 
-# 1. 운항 지연 분석 배경
-
-![](./images/catoon.png){width=700 height=700}
-
-
-# 분석 목표
-
-어떤 제조사의 기체가 지연을 자주 유발하는지 확인 후 운항 효율성 개선
-
-
-# 2. 데이터 분비 및 전처리
-
-2.1 사용하는 Python 라이브러리
-
-
-
+- UA 항공사(우리 회사: 운행량 1위) 데이터만 가져오기
 ```{python}
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-from nycflights13 import flights, planes
+df  = df[df['carrier']=='UA']
+df_len = len(df)
+print("UA 항공사의 운행량 :", df_len)
 ```
 
-```{python}
-flights.info()
-planes.info()
-```
-
-
-
-# 2.2 데이터 병합
-
-- 두 데이터를 tailnum(기체 등록번호) 기준으로 병합하여 기체별 제조사 정보를 결합
-```{python}
-# tailnum을 key로 merge 하기 
-df = pd.merge(flights, planes, on = 'tailnum', how='left')
-df.info()
-```
-
-# 2.2 날짜 및 시간 데이터 생성 
-연(year_x), 월(month), 일(day), 시(hour), 분(minute) 데이터를 조합하여 date_time 생성
-2013년 1월~6월(상반기) 데이터를 필터링
+## 2.3 날짜 및 시간 데이터 추가
+- 연, 월, 일, 시, 분 데이터를 조합해 date_time 생성
 ```{python}
 df['date_time'] = pd.to_datetime(df['year_x'].astype(str) + '-' + df['month'].astype(str) + '-' + df['day'].astype(str) + ' ' + df['hour'].astype(str) + ':' + df['minute'].astype(str))
-df_fh = df[(df['date_time'] >= '2013-01-01') & (df['date_time'] <= '2013-06-30')]
 ```
 
-
-# 2.3 지연시간 관련 전처리
- 음수 도착 지연 시간 제거 (빠른 이륙은 지연 원인이 아니므로 분석 제외)
- 제조사별 운항 횟수 확인
- 우리는 운항이 가장 많은 항공사야 우리 항공사를 골라줘 
-
- - 항공사별 운항 횟수 집계
- ```{python}
- top_airline = df_fh['carrier'].value_counts().idxmax()  # 운항 횟수가 가장 많은 항공사 선택
-
-df_fh_our_airline = df_fh[df_fh['carrier'] == top_airline]  # 우리 항공사의 데이터만 필터링
-df_fh_our_airline = df_fh_our_airline[df_fh_our_airline['dep_delay'] >= 0]  # 음수 제거
+- 2013년 1월~6월(상반기) 데이터를 필터링
+```{python}
+df_fh =df
+#df_fh = df[(df['date_time'] >= '2013-01-01') & (df['date_time'] <= '2013-06-30')]
+#first_half = len(df_fh)
+#print("f {df_len}=>{fisrt_half}")
 ```
 
+- 빠른 이륙은 지연 원인이 아니므로 0으로 변경
+```{python}
 
-# 우리 항공사의 상위 5개 제조사 선정
+#0보다 작으면 0이라고 하기 
+df_fh['dep_delay'] = df_fh['dep_delay'].apply(lambda x: 0 if x < 0 else x)
+
+zero_df_fh = len(df_fh)
+# 변환 후 데이터 크기 출력
+print(zero_df_fh)
+```
+
+## 2.4 이상치 제거
+
+- 이상치 제거를 위한 IQR(Interquartile Range) 계산
 
 ```{python}
-top_5_manufacturers = df_fh_our_airline['manufacturer'].value_counts().head(5).index
+Q1 = df_fh['dep_delay'].quantile(0.25)
+Q3 = df_fh['dep_delay'].quantile(0.75)
+IQR = Q3 - Q1
+
+
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+df_fh = df_fh[(df_fh['dep_delay'] >= lower_bound) & (df_fh['dep_delay'] <= upper_bound)]
+iqr_del_df = len(df_fh)
+
+print(Q1, Q3)
+print("f {zero_df_fh} => {iqr_del_df}")
 ```
 
-# 어차피 3개밖에 안쓰는구나 
 
+// 코드 넣기
+// 테크닉 설명 부분 넣기 
+// ex) 바 차트 그리고, 빈도 넣고 겹쳐 져서 그렸다.
+// subplot을 넣었다. 
+
+// 보잉만 빨간색 나머지는 회색 ! 
+// 민 미디언 나누기 
+
+// 보잉만 돋보이게 만들기 
+
+
+
+
+
+
+## 3.2 제조사별 평균 및 중앙값 지연 시간 분석  
+
+::: {.callout-note appearance="simple"}
+### ⏳ 제조사별 평균 지연 시간 & 중앙값 지연 시간 비교  
+- **특정 제조사의 항공기가 평균적으로 더 오랫동안 지연되는가?**  
+- **평균(Mean)과 중앙값(Median)을 비교하여 이상치(outlier)의 영향을 확인**  
+- **보잉(Boeing) 제조사가 강조되도록 정렬**  
+:::
+
+::: {.cell}
 ```{python}
-set(df_fh_our_airline['manufacturer'])
+#| echo: false
+#| fig-align: "center"
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 0을 제거한 데이터 사용
+df_fh_tmp = df_fh[df_fh['dep_delay'] > 0]
+
+# 제조사별 평균 및 중앙값 계산
+mean_delay = df_fh_tmp.groupby('manufacturer')['dep_delay'].mean()
+median_delay = df_fh_tmp.groupby('manufacturer')['dep_delay'].median()
+
+# 보잉(Boeing)을 가장 먼저 나오도록 정렬
+mean_delay = mean_delay.sort_values(ascending=False)  # 기본 정렬
+median_delay = median_delay[mean_delay.index]  # 같은 순서로 정렬
+
+if 'BOEING' in mean_delay.index:
+    ordered_index = ['BOEING'] + [m for m in mean_delay.index if m != 'BOEING']
+    mean_delay = mean_delay.reindex(ordered_index)
+    median_delay = median_delay.reindex(ordered_index)
+
+# 시각화
+plt.figure(figsize=(8, 4))
+bar_width = 0.4  # 막대 너비 설정
+x = range(len(mean_delay))
+
+plt.bar(x, mean_delay, width=bar_width, label="Mean Delay", color=sns.color_palette("pastel")[0])
+plt.bar([i + bar_width for i in x], median_delay, width=bar_width, label="Median Delay", color=sns.color_palette("pastel")[2])
+
+plt.xticks([i + bar_width / 2 for i in x], mean_delay.index, rotation=45)
+plt.xlabel("Manufacturer", fontsize=12)
+plt.ylabel("Departure Delay (minutes)", fontsize=12)
+plt.title("Mean vs. Median Departure Delay by Manufacturer", fontsize=14)
+plt.legend()
+plt.grid(True)
+
+plt.show()
 ```
+:::
 
 
-# 제조사별 운항 횟수 집계
+
+// 보잉만 빨간색 나머지는 회색 ! 
+// 민 미디언 나누기 
+
+// 보잉만 돋보이게 만들기 
+
+## 3.2  제조사 데이터 처리
+
+::: {.callout-note appearance="simple"}
+### UA 항공사가 운행하는 비행기의 제조사의 비율
+:::
 
 ```{python}
-manufacturer_counts = df_fh_our_airline['manufacturer'].value_counts()
-```
+#| echo: false
+#| fig-align: "center"
 
+manufacturer_counts = df_fh['manufacturer'].value_counts()
 
-# 원형 그래프 (파이 차트) 생성
+# 제조사 이름과 운항 횟수를 함께 표시
+labels = [f"{manufacturer} ({count})" for manufacturer, count in zip(manufacturer_counts.index, manufacturer_counts.values)]
 
-```{python}
-plt.figure(figsize=(8, 8))
-plt.pie(manufacturer_counts, labels=manufacturer_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))
+plt.figure(figsize=(5, 5))
+plt.pie(manufacturer_counts, labels=labels, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))
 plt.title('Aircraft Manufacturer Distribution for Our Airline')
 plt.show()
 ```
 
+## 3.3 제조사별 지연 발생 빈도 분석  
 
-# 3. 제조사별 운항 지연 분석
-# 3.1 제조사별 평균 지연 시간
-
-# 이상치 제거를 위한 IQR(Interquartile Range) 계산
+::: {.callout-note appearance="simple"}
+### 🚀 제조사별 지연 발생 횟수 및 비율  
+- **어떤 제조사의 항공기가 가장 많이 지연되는가?**  
+- **전체 운항 대비 지연 비율은 제조사별로 차이가 있는가?**  
+:::
 
 ```{python}
-Q1 = df_fh_our_airline['dep_delay'].quantile(0.25)
-Q3 = df_fh_our_airline['dep_delay'].quantile(0.75)
-IQR = Q3 - Q1
+#| echo: false
+#| fig-align: "center"
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 지연 발생 횟수 계산 (dep_delay > 0 인 경우만)
+delay_counts = df_fh[df_fh['dep_delay'] > 0].groupby('manufacturer')['dep_delay'].count()
+
+# 전체 운항 대비 지연 비율 계산
+total_flights = df_fh['manufacturer'].value_counts()
+delay_rate = (delay_counts / total_flights).fillna(0) * 100  # 퍼센트 변환
+
+# 데이터 정렬
+delay_df = (
+    pd.DataFrame({'Delay Count': delay_counts, 'Delay Rate (%)': delay_rate})
+    .sort_values(by="Delay Count", ascending=False)
+)
+
+# 시각화
+fig, ax1 = plt.subplots(figsize=(10, 3.7))
+
+sns.barplot(x=delay_df.index, y=delay_df["Delay Count"], palette="pastel", ax=ax1)
+ax1.set_ylabel("Number of Delays", fontsize=12)
+ax1.set_xlabel("Manufacturer", fontsize=12)
+ax1.set_title("Number of Delays by Manufacturer", fontsize=14)
+ax1.tick_params(axis="x", rotation=45)
+
+# 지연 비율(%) 추가 (보조 축)
+ax2 = ax1.twinx()
+sns.lineplot(x=delay_df.index, y=delay_df["Delay Rate (%)"], marker="o", color="red", ax=ax2)
+ax2.set_ylabel("Delay Rate (%)", fontsize=12)
+ax2.grid(False)
+
+plt.show()
+
 ```
 
 
-# 정상 범위 설정 (IQR 범위 내 데이터만 유지)
+# 결론 정리
 
+1. 제조사별 평균 지연 시간, 중앙값은 비슷하다.
+2. 우리 항공사가 운행하는 비행기의 제조사 비율은 보잉이 72.2로 압도적이다. 
+3. 또 제조사별 지연 발생 빈도를 분석했을 때 보잉사의 비행기가 42%로 가장 높은 비율을 보여준다. 
+4. 따라서 우리는 한정된 자원으로 효율적인 항공사 운행을 위해서 
+5. 공항에 보잉사 정비 요원을 더 많이 배치하여, 예방 정비를 철지히 하도록 해야한다. 
+6. 아니면 발생 빈도를 바탕으로 3개의 회사별 비용을 산정하여 배분다. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 3.3 제조사별 월별 지연 패턴 분석  
+
+::: {.callout-note appearance="simple"}
+### 📅 제조사별 월별 평균 지연 시간 분석  
+- **제조사별로 특정 월에 더 지연이 많이 발생하는가?**  
+- **날씨(겨울 폭설, 여름 태풍 등)가 영향을 주는지 분석 가능**  
+- **보잉(Boeing) 제조사가 강조되도록 정렬 및 스타일 조정**  
+:::
+
+::: {.cell}
 ```{python}
-lower_bound = Q1 - 1.5 * IQR
-upper_bound = Q3 + 1.5 * IQR
-```
+#| echo: false
+#| fig-align: "center"
 
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# 이상치 제거
+# 월별 데이터 생성
+df_fh['month'] = df_fh['date_time'].dt.month
 
-```{python}
-df_fh_our_airline = df_fh_our_airline[(df_fh_our_airline['dep_delay'] >= lower_bound) & (df_fh_our_airline['dep_delay'] <= upper_bound)]
-```
+# 제조사별 월별 평균 지연 계산
+monthly_delay = df_fh.groupby(['manufacturer', 'month'])['dep_delay'].mean().unstack()
 
+# 보잉(Boeing)을 맨 앞으로 정렬
+if 'BOEING' in monthly_delay.index:
+    monthly_delay = monthly_delay.reindex(['BOEING'] + [m for m in monthly_delay.index if m != 'BOEING'])
 
-
-# - 제조사별 평균 지연 시간 및 표준편차 확인
-
-```{python}
-df_fh_our_airline.groupby('manufacturer')['dep_delay'].describe()
-```
-
-
-# 3.2 제조사별 운항 횟수 대비 지연 비율
-# - 단순 평균 지연 시간 비교가 아닌, 운항 횟수 대비 지연 발생 비율 계산
-
-```{python}
-delay_rate = df_fh_our_airline.groupby('manufacturer')['dep_delay'].count() /df_fh_our_airline['manufacturer'].value_counts()
-
-delay_rate.sort_values(ascending=False)
-```
-
-
-
-# 3.3 제조사별 이륙 vs. 도착 지연 비교
-# - 특정 제조사의 기체에서 이륙 지연이 많은지, 운항 중 추가 지연이 발생하는지 분석
-
-```{python}
-df_fh_our_airline.groupby('manufacturer')[['dep_delay']].mean()
-```
-
-
-
-# 3.4 월별 지연 패턴 분석
-# - 제조사별 월별 평균 도착 지연 분석
-
-```{python}
-df_fh_our_airline['month'] = df_fh_our_airline['date_time'].dt.month
-monthly_delay = df_fh_our_airline.groupby(['manufacturer', 'month'])['arr_delay'].mean().unstack()
-monthly_delay
-
-plt.figure(figsize=(12,10))
-monthly_delay = df_fh_our_airline.groupby(['manufacturer', 'month'])['dep_delay'].mean().unstack()
-
+# 시각화
+plt.figure(figsize=(12, 4))
 sns.lineplot(data=monthly_delay.T, marker="o")
-plt.xlabel("Month")
-plt.ylabel("Average Delay (minutes)")
-plt.title("Monthly Average Delay by Manufacturer")
+
+plt.xlabel("Month", fontsize=12)
+plt.ylabel("Average Delay (minutes)", fontsize=12)
+plt.title("Monthly Average Delay by Manufacturer", fontsize=14)
 plt.legend(title="Manufacturer")
 plt.grid(True)
+
 plt.show()
 ```
+:::
 
 
+## 3.4 제조사별 운행 대수 vs. 평균 지연 시간 vs. 지연 비율 (3D 분석)  
 
+::: {.callout-note appearance="simple"}
+### 📊 제조사별 운행 대수, 평균 지연 시간, 지연 비율 3D 시각화  
+- **운항 대수가 많을수록 지연이 많아지는가?**  
+- **특정 제조사가 더 효율적으로 운항하는가?**  
+:::
 
-# 4. 데이터 시각화
-# 4.1 제조사별 도착 지연 시간 분포 
-
-# 제조사별 평균 지연 시간 비교
-
+::: {.cell}
 ```{python}
-mean_delays = df_fh_our_airline.groupby('manufacturer')['dep_delay'].mean().sort_values()
+#| echo: false
+#| fig-align: "center"
 
-plt.figure(figsize=(10,5))
-mean_delays.plot(kind='bar', color='skyblue')
-plt.xlabel('Manufacturer')
-plt.ylabel('Mean Departure Delay (minutes)')
-plt.title('Mean Departure Delay by Manufacturer (Jan-Jun 2013)')
-plt.grid(True)
-plt.show()
-```
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
+# 제조사별 운항 대수, 평균 지연 시간, 지연 비율 계산
+manufacturer_flight_counts = df_fh['manufacturer'].value_counts()
+mean_dep_delay = df_fh[df_fh['dep_delay'] > 0].groupby('manufacturer')['dep_delay'].mean()
+delay_rate = (df_fh[df_fh['dep_delay'] > 0].groupby('manufacturer')['dep_delay'].count() / manufacturer_flight_counts) * 100
 
-# 4.2 제조사별 이륙 vs. 도착 지연 비교 (가로 막대 그래프)
+# 보잉(Boeing)을 맨 앞으로 정렬
+if 'BOEING' in manufacturer_flight_counts.index:
+    manufacturer_flight_counts = manufacturer_flight_counts.reindex(['BOEING'] + [m for m in manufacturer_flight_counts.index if m != 'BOEING'])
+    mean_dep_delay = mean_dep_delay.reindex(manufacturer_flight_counts.index)
+    delay_rate = delay_rate.reindex(manufacturer_flight_counts.index)
 
-```{python}
-delay_comparison = df_fh_our_airline.groupby('manufacturer')[['dep_delay', 'arr_delay']].mean()
-
-delay_comparison.plot(kind='barh', figsize=(12,6), color=['royalblue', 'tomato'])
-plt.xlabel('Mean Delay (minutes)')
-plt.ylabel('Manufacturer')
-plt.title('Mean Departure vs. Arrival Delay by Manufacturer (Jan-Jun 2013)')
-plt.legend(['Departure Delay', 'Arrival Delay'])
-plt.grid(True)
-plt.show()
-```
-
-
-
-
-# 4.3 3차원 데이터 분석을 통해서 보기 
-# 제조사별 평균 이륙 지연, 도착 지연 및 운행 대수 데이터 준비
-
-```{python}
-delay_comparison = df_fh_our_airline.groupby('manufacturer')[['dep_delay', 'arr_delay']].mean()
-manufacturer_flight_counts = df_fh_our_airline['manufacturer'].value_counts()
-
-```
-
-# 데이터 병합
-
-```{python}
-delay_comparison['flight_count'] = manufacturer_flight_counts
-```
-
-
-# 3D 그래프 생성
-
-```{python}
-fig = plt.figure(figsize=(12, 8))
+# 3D 시각화 설정
+fig = plt.figure(figsize=(20, 4))
 ax = fig.add_subplot(111, projection='3d')
-```
 
+x_labels = manufacturer_flight_counts.index
+x = np.arange(len(x_labels))
+y = manufacturer_flight_counts.values
+z = np.zeros(len(x))  # 막대그래프 시작점 (0에서 시작)
 
-# x, y, z 좌표 설정
+dx = np.ones(len(x)) * 0.5  # 막대 두께
+dy = np.ones(len(x)) * 0.5  # 막대 깊이
+dz = mean_dep_delay.loc[x_labels].values  # 평균 지연 시간 (막대 높이)
 
-```{python}
-x_labels = delay_comparison.index  # 제조사 목록
-x = np.arange(len(x_labels))  # x축 인덱스 (제조사별)
-y_dep = delay_comparison['dep_delay']  # 이륙 지연
-y_arr = delay_comparison['arr_delay']  # 도착 지연
-z = delay_comparison['flight_count']  # 운행 대수
-```
+# 색상 지정 (seaborn pastel 팔레트 사용)
+colors = sns.color_palette("pastel", len(x))
 
+# 3D 바 차트 생성 (입체감 추가)
+ax.bar3d(x, y, z, dx, dy, dz, color=colors, shade=True)
 
-# 막대 너비 설정
-
-```{python}
-bar_width = 0.3
-```
-
-
-# 3D 막대 그래프 형태로 시각화 (조금 더 정교한 스타일 적용)
-
-```{python}
-ax.bar(x - bar_width, y_dep, zs=z, zdir='y', color='royalblue', alpha=0.8, width=bar_width, label='Departure Delay')
-ax.bar(x + bar_width, y_arr, zs=z, zdir='y', color='tomato', alpha=0.8, width=bar_width, label='Arrival Delay')
-```
-
-
-# 축 설정 및 시각적 개선
-
-```{python}
-ax.set_xlabel('Manufacturer', fontsize=12, labelpad=15, color = 'red')
-ax.set_ylabel('Total Flights Operated', fontsize=12, labelpad=15)
-ax.set_zlabel('Mean Delay (minutes)', fontsize=12, labelpad=15)
+# 축 설정 및 제목
+ax.set_xlabel("Manufacturer", fontsize=10, labelpad=10)
+ax.set_ylabel("Total Flights Operated", fontsize=10, labelpad=10)
+ax.set_zlabel("Mean Delay (minutes)", fontsize=10, labelpad=10)
 ax.set_xticks(x)
-ax.set_xticklabels(x_labels, rotation=45, fontsize=10, ha='right')
-ax.set_title('3D Visualization of Mean Departure & Arrival Delay by Manufacturer', fontsize=14, pad=20)
-ax.view_init(elev=20, azim=120)  # 시점 조정
-```
+ax.set_xticklabels(x_labels, rotation=45)
 
-
-# 범례 추가
-
-```{python}
-ax.legend()
-```
-
-
-# 그래프 출력
-
-```{python}
 plt.show()
 ```
+:::
 
 
 
-# 5. 결론 및 운영 개선 방안
+## 4. 

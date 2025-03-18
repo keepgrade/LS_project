@@ -16,7 +16,7 @@
   /* 🔹 부제목 스타일 (subtitle) */
   .reveal h2 {
     font-size: 48px;  /* 부제목 크기 */
-    color: #ff6600;  /* 부제목 색상 */
+    color: #ffcc00; /* 부제목 색상 */
     text-align: center;
   }
   

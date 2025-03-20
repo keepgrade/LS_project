@@ -225,12 +225,11 @@ Team F5 : 정의주, 한지수, 신태선
 </div>
 </div>
 <p><img data-src="./images/catoon.png" width="800" height="400"></p>
-<p>/개선사항/ 가로로 두개 배열 하기</p>
 </section>
 <section id="데이터-정보" class="slide level2">
 <h2>2.1 데이터 정보</h2>
 <div class="column" style="margin-top:100px;">
-<div id="970ecd6c" class="cell" data-execution_count="2">
+<div id="ade61141" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a>flights.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -262,7 +261,7 @@ memory usage: 48.8+ MB</code></pre>
 </div>
 </div>
 </div><div class="column" style="margin-top:100px;">
-<div id="d9b8445b" class="cell" data-execution_count="3">
+<div id="d4af43b7" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>planes.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -289,7 +288,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>두 데이터를 tailnum 기준으로 병합하여 기체별 제조사 정보를 결합</li>
 </ul>
-<div id="8b2ad677" class="cell" data-execution_count="4">
+<div id="ed2d6ef9" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="co"># tailnum을 key로 merge 하기 </span></span>
 <span id="cb5-2"><a href=""></a>df <span class="op">=</span> pd.merge(flights, planes, on <span class="op">=</span> <span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
 <span id="cb5-3"><a href=""></a><span class="bu">print</span>(<span class="st">"병합된 데이터 :"</span>, <span class="bu">len</span>(df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -297,7 +296,7 @@ memory usage: 233.7+ KB</code></pre>
 <pre><code>병합된 데이터 : 336776</code></pre>
 </div>
 </div>
-<div id="ad8b09df" class="cell" data-execution_count="5">
+<div id="04fb4ade" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -309,7 +308,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>UA 항공사(우리 회사: 운행량 1위) 데이터만 가져오기</li>
 </ul>
-<div id="ef6ca2b5" class="cell" data-execution_count="6">
+<div id="4a0fb877" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>df  <span class="op">=</span> df[df[<span class="st">'carrier'</span>]<span class="op">==</span><span class="st">'UA'</span>]</span>
 <span id="cb7-2"><a href=""></a>df_len <span class="op">=</span> <span class="bu">len</span>(df)</span>
 <span id="cb7-3"><a href=""></a><span class="bu">print</span>(<span class="st">"UA 항공사의 운행량 :"</span>, df_len)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -323,13 +322,13 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>연, 월, 일, 시, 분 데이터를 조합해 date_time 생성</li>
 </ul>
-<div id="e92fe3a9" class="cell" data-execution_count="7">
+<div id="ccc6f149" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>df[<span class="st">'date_time'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'year_x'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'month'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'day'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">' '</span> <span class="op">+</span> df[<span class="st">'hour'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">':'</span> <span class="op">+</span> df[<span class="st">'minute'</span>].astype(<span class="bu">str</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>2013년 1월~6월(상반기) 데이터를 필터링</li>
 </ul>
-<div id="bc1efb5e" class="cell" data-execution_count="8">
+<div id="562c262e" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>df_fh <span class="op">=</span>df</span>
 <span id="cb10-2"><a href=""></a><span class="co">#df_fh = df[(df['date_time'] &gt;= '2013-01-01') &amp; (df['date_time'] &lt;= '2013-06-30')]</span></span>
 <span id="cb10-3"><a href=""></a><span class="co">#first_half = len(df_fh)</span></span>
@@ -338,7 +337,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>빠른 이륙은 지연 원인이 아니므로 0으로 변경</li>
 </ul>
-<div id="0561c59a" class="cell" data-execution_count="9">
+<div id="53b1be7b" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="co">#0보다 작으면 0이라고 하기 </span></span>
 <span id="cb11-2"><a href=""></a>df_fh[<span class="st">'dep_delay'</span>] <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> x)</span>
 <span id="cb11-3"><a href=""></a></span>
@@ -355,7 +354,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>이상치 제거를 위한 IQR(Interquartile Range) 계산</li>
 </ul>
-<div id="818bc33f" class="cell" data-execution_count="10">
+<div id="8c30d679" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>Q1 <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].quantile(<span class="fl">0.25</span>)</span>
 <span id="cb13-2"><a href=""></a>Q3 <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].quantile(<span class="fl">0.75</span>)</span>
 <span id="cb13-3"><a href=""></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
@@ -376,7 +375,7 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </section>
 <section id="제조사별-평균-및-중앙값-지연-시간-분석" class="slide level2">
-<h2>3.2 제조사별 평균 및 중앙값 지연 시간 분석</h2>
+<h2>3.1 제조사별 평균 및 중앙값 지연 시간 분석</h2>
 <div class="callout callout-note callout-titled callout-style-simple">
 <div class="callout-body">
 <div class="callout-title">
@@ -391,18 +390,16 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </li>
 <li><strong>평균(Mean)과 중앙값(Median)을 비교하여 이상치(outlier)의 영향을 확인</strong><br>
 </li>
-<li><strong>보잉(Boeing) 제조사가 강조되도록 정렬</strong><br>
-</li>
 </ul>
 </div>
 </div>
 </div>
 <div class="cell">
-<div id="5b881dc3" class="cell" data-execution_count="11">
+<div id="6bb9c834" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="flights_planes_files/figure-revealjs/cell-12-output-1.png" class="quarto-figure quarto-figure-center" width="662" height="465"></p>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-12-output-1.png" class="quarto-figure quarto-figure-center" width="1141" height="421"></p>
 </figure>
 </div>
 </div>
@@ -424,7 +421,7 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </div>
 </div>
-<div id="88957616" class="cell" data-execution_count="12">
+<div id="a0a6a62e" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -454,7 +451,7 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </div>
 </div>
-<div id="0c057ac1" class="cell" data-execution_count="13">
+<div id="bc48d1cc" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -464,9 +461,21 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </div>
 </section>
+<section id="결론-정리" class="slide level2">
+<h2>4. 결론 정리</h2>
+<div id="c732033b" class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-15-output-1.png" width="1332" height="612"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section>
-<section id="결론-정리" class="title-slide slide level1 center">
-<h1>결론 정리</h1>
+<section id="section" class="title-slide slide level1 center">
+<h1></h1>
 <ol type="1">
 <li>제조사별 평균 지연 시간, 중앙값은 비슷하다.</li>
 <li>우리 항공사가 운행하는 비행기의 제조사 비율은 보잉이 72.2로 압도적이다.</li>
@@ -499,11 +508,11 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </div>
 <div class="cell">
-<div id="cf9e5280" class="cell" data-execution_count="14">
+<div id="2d39d25b" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="flights_planes_files/figure-revealjs/cell-15-output-1.png" class="quarto-figure quarto-figure-center" width="951" height="380"></p>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-16-output-1.png" class="quarto-figure quarto-figure-center" width="951" height="380"></p>
 </figure>
 </div>
 </div>
@@ -531,18 +540,18 @@ f {zero_df_fh} =&gt; {iqr_del_df}</code></pre>
 </div>
 </div>
 <div class="cell">
-<div id="1389ccde" class="cell" data-execution_count="15">
+<div id="6efd7cbc" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="flights_planes_files/figure-revealjs/cell-16-output-1.png" class="quarto-figure quarto-figure-center" width="330" height="384"></p>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-17-output-1.png" class="quarto-figure quarto-figure-center" width="330" height="384"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="section" class="slide level2">
+<section id="section-1" class="slide level2">
 <h2>4.</h2>
 
 </section></section>

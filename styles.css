@@ -70,3 +70,30 @@
     color: #FFD700 !important;  /* 노란색 (골드) */
     font-weight: bold;  /* 볼드 스타일 */
 }
+.thank-you {
+  position: fixed;  /* 페이지 크기와 상관없이 전체 화면 채우기 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./images/thankyou.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  z-index: 999; /* 다른 요소보다 위에 표시 */
+}
+
+.section-title {
+  font-size: 2.0em;  /* 🔥 제목 크기 */
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  display: block;
+  margin-top: 20px;
+}

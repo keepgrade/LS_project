@@ -9,8 +9,6 @@ author: "Team F5 : 정의주, 한지수, 신태선"
 subtitle: "UA 항공의 제조사별 출발 지연 분석"
 format:
   revealjs:
-    toc: true  # ✅ 자동 목차 추가
-    toc-depth: 2  # ✅ 목차 깊이 설정 (h1~h2까지 표시)
     footer: "© 2025 Team F5"
     logo: "images/logo.png"
     slide-number: true
@@ -33,9 +31,40 @@ from nycflights13 import flights, planes
 
 ```
 
-# 목차 
-# 1. 
-## 1.1. 운항 지연 분석 배경 {.text-center}
+# Contents
+
+::: {.text-center}
+
+<br>
+<span class="section-title">1. 문제상황 정의 ✈️   
+
+<span class="section-title">2. 데이터 준비 및 전처리 📚   
+
+<span class="section-title">3. 데이터 분석 및 시각화 📊
+
+<span class="section-title">4. 결론 및 개선 방안 🔍
+:::
+
+
+
+# 1. 문제상황 정의
+
+## 1.1 상황 설명 {.text-center}
+::: {.column width="50%" style="margin-top:10px;"}
+![](./images/UA.png){fig-align="center" width=900 height=600}
+:::
+
+::: {.column width="50%" style="margin-top:150px;"}
+### 가정:
+- 우리는 UA 항공사 직원입니다 ! 🐹✈️
+
+<br>
+
+### 상황:
+- 내부 회의 결과를 바탕으로 항공기 운행의 효율성을 개선하고자 합니다. 😊
+:::
+
+## 1.2 운항 지연 분석 배경 {.text-center}
 
 ::: {.column width="50%" style="margin-top:10px;"}
 ![](./images/catoon.png){fig-align="center" width=900 height=600}
@@ -44,15 +73,20 @@ from nycflights13 import flights, planes
 ::: {.column width="50%" style="margin-top:150px;"}
 ### ✈️ UA 항공사 내부 회의 결과
 
-- 상반기에 **UA 항공사**의 잦은 **출발 지연**.
-- 조사 결과, **기체 부품 문제**가 주요 원인.
-- 제조사별 항공기와 출발 지연 데이터 간 **연관성 분석**. 
-- 데이터분석 기반 **효율성 개선** 전략 수립.
+<br>
+
+✅ 상반기 동안 **UA 항공사**에서 잦은 **출발 지연** 발생
+
+✅ 조사 결과, **기체 부품 문제**가 주요 원인으로 파악
+
+✅ 제조사별 항공기와 출발 지연 데이터 간 **연관성 분석** 진행
+
+✅ 데이터 분석 기반 **효율성 개선** 전략 수립 필요
 :::
 
 
 
-# 2. 
+# 2. 데이터 준비 및 전처리
 ## 2.1 데이터 정보
 
 ::: {.column width="50%" style="margin-top:80px;"}
@@ -64,10 +98,10 @@ flights.info()
 ::: {.column width="50%" style="margin-top:80px;"}
 ### 🔍 주요 데이터 
 
-- arr_delay : 
-- carrier :
-- year, month, day :
-- tailnum :
+- dep_delay : 출발 지연 
+- carrier : 항공사
+- year, month, day : 년, 월, 일
+- tailnum : 기체 번호
 :::
 
 ## 2.1 데이터 정보
@@ -81,8 +115,8 @@ planes.info()
 ::: {.column width="50%" style="margin-top:80px;"}
 ### 🔍 주요 데이터 
 
-- tailnum :
-- manufacturer :
+- tailnum : 기체 번호
+- manufacturer : 제조사
 
 :::
 
@@ -93,13 +127,17 @@ planes.info()
 ```{python}
 # tailnum을 key로 merge 하기 
 df = pd.merge(flights, planes, on = 'tailnum', how='left')
+```
+```{python}
+#|echo : false
 print("병합된 데이터 :", len(df))
 ```
-- 병합된 데이터의 주요 데이터
+- 병합된 데이터 셋의 주요 데이터
 ```{python}
+#|echo : false
 df[['arr_delay','carrier','tailnum','manufacturer','year_x','month','day']].head()
 ```
-## 2.2 데이터 추출
+## 2.3 데이터 추출
 - **UA** 항공사 데이터만 가져오기
 
 ```{python}
@@ -116,16 +154,17 @@ flight_sorted = flight.sort_values(by='flight', ascending=False)
 #| code-fold : true 
 #| fig-align: center
 
-# 색상 조건 설정 (UA는 빨간색, 나머지는 하늘색)
+# 코드 설명 1
+# 색상 조정 
 g_colors = ['red' if carrier == 'UA' else 'skyblue' for carrier in flight_sorted['carrier']]
 
 # 시각화
 plt.figure(figsize=(14, 1.7))
 plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color=g_colors)
 
-plt.xlabel("Airline", fontsize=15, fontweight='bold')
+plt.xlabel("Carrier", fontsize=15, fontweight='bold')
 plt.ylabel("Number of Flights", fontsize=15, fontweight='bold')
-plt.title("Number of Flights by Airline", fontsize=20, fontweight='bold')
+plt.title("Number of Flights by Carrier", fontsize=20, fontweight='bold')
 plt.xticks(rotation=45)
 plt.show()
 ```
@@ -180,31 +219,47 @@ print(f"빠른 이륙 처리 후 데이터의 개수: {first_half} => {zero_df_f
 - 이상치 제거를 위한 IQR(Interquartile Range) 계산
 
 ```{python}
-Q1 = df_fh['dep_delay'].quantile(0.25)
-Q3 = df_fh['dep_delay'].quantile(0.75)
-IQR = Q3 - Q1
+#| code-fold : true
+# 이상치 제거를 위한 IQR(Interquartile Range) 계산함수 
+# 코드 설명 
+def remove_outliers_by_manufacturer(df, column, manufacturer_column):
+    filtered_df = pd.DataFrame()  # 이상치 제거된 데이터를 저장할 데이터프레임
+    
+    for manufacturer in df[manufacturer_column].unique():
+        subset = df[df[manufacturer_column] == manufacturer]  # 특정 제조사 데이터 필터링
+        
+        # IQR 계산
+        Q1 = subset[column].quantile(0.25)
+        Q3 = subset[column].quantile(0.75)
+        IQR = Q3 - Q1
+        
+        # 이상치 기준
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
 
-
-lower_bound = Q1 - 1.5 * IQR
-upper_bound = Q3 + 1.5 * IQR
-
-df_fh = df_fh[(df_fh['dep_delay'] >= lower_bound) & (df_fh['dep_delay'] <= upper_bound)]
+        # 이상치 제거 후 데이터프레임에 추가
+        cleaned_subset = subset[(subset[column] >= lower_bound) & (subset[column] <= upper_bound)]
+        filtered_df = pd.concat([filtered_df, cleaned_subset], ignore_index=True)
+    
+    return filtered_df
 ```
 ```{python}
-#| echo : false
-iqr_del_df = len(df_fh)
+#|echo : false
+# 제조사별 dep_delay 이상치 제거 적용
+df_fh = remove_outliers_by_manufacturer(df_fh, 'dep_delay', 'manufacturer')
 
-print(f"이상치 제거 기준: Q1 : {Q1}, Q3 :{Q3}")
-print(f"이상치를 제거한 데이터 개수 변화: {zero_df_fh} => {iqr_del_df}")
+# 변환 후 데이터 크기 출력
+final_df_fh = len(df_fh)
+print(f"이상치 제거 후 데이터의 개수: {zero_df_fh} => {final_df_fh}")
 ```
 
-# 3
+# 3. 데이터 분석 및 시각화
 
 
-## 3.1 제조사별 평균 및 중앙값 지연 시간 분석  
+## 3.1 제조사별 지연 시간 평균 및 중앙값 분석  
 
 ::: {.callout-note appearance="simple"}  
-- 제조사별 평균 출발 지연 시간과 중앙값을 비교한 결과, 큰 차이는 나타나지 않음
+- 제조사별 출발 지연시간의 평균과 중앙값을 비교한 결과, 큰 차이는 나타나지 않음
 - 추가적인 지연 원인(정비 주기, 기종별 특성, 운항 패턴 등)을 고려하여 분석을 확장할 필요가 있음
 :::
 
@@ -239,22 +294,34 @@ mean_avg = manufacturer_stats['mean'].mean()
 median_avg = manufacturer_stats['median'].mean()
 
 # 시각화
+# 서브 플랏으로 두 그래프를 보여주었다. 
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 
 # 평균값 그래프
 sns.barplot(x=manufacturer_stats.index, y=manufacturer_stats['mean'], ax=axes[0], palette='pastel')
+# 평균값의 평균 그래프를 플랏에 그림 
 axes[0].axhline(mean_avg, color='red', linestyle='--', label=f'Mean Avg: {mean_avg:.1f}')
+
+# 평균 막대 그래프 
+axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=0, ha='right')
+
 axes[0].set_title('Aircraft Manufacturer Delay (Mean)')
 axes[0].set_ylabel('Average Delay (minutes)')
-axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=0, ha='right')
+
 axes[0].legend()
 
 # 중앙값 그래프
 sns.barplot(x=manufacturer_stats.index, y=manufacturer_stats['median'], ax=axes[1], palette='pastel')
+
+# 중앙값의 평균 그래프 
 axes[1].axhline(median_avg, color='blue', linestyle='--', label=f'Median Avg: {median_avg:.1f}')
+
+# 중앙값 그래프
+axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=0, ha='right')
+
 axes[1].set_title('Aircraft Manufacturer Delay (Median)')
 axes[1].set_ylabel('Median Delay (minutes)')
-axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=0, ha='right')
+
 axes[1].legend()
 
 plt.tight_layout()
@@ -263,11 +330,13 @@ plt.show()
 
 :::
 
+## 3.1 제조사별 지연 시간 평균 및 중앙값 분석  
+![](./images/aaa.png){fig-align="center" width=1000 height=600}
 
 ## 3.2 UA 항공사의 비행기 제조사 비율
 
 ::: {.callout-note appearance="simple"}  
-- BOEING사의 운행 비율이 73.5%로 가장 높음
+- BOEING사의 운행 비율이 73.2%로 가장 높음
 - UA 항공사는 BOEING 기종을 중심으로 운영되고 있음
 - BOEING에서 발생하는 출발 지연이 전체 운항에 미치는 영향이 클 가능성이 있음
 :::
@@ -293,6 +362,7 @@ labels = [f"{manufacturer} ({count})" for manufacturer, count in zip(manufacture
 # 다크그레이 HEX 코드 설정
 dark_gray = '#A9A9A9'
 
+# 파이 그래프 
 plt.figure(figsize=(10, 5.2))
 plt.pie(manufacturer_counts, labels=labels, autopct='%1.1f%%', startangle=140, colors=['red','gray', dark_gray])
 plt.show()
@@ -334,6 +404,8 @@ delay_df = (
 #| code-fold: true
 #| fig-align: "center"
 
+
+# 색상 사용자 지정 
 yellow = '#ffcc00'
 
 # 시각화 서브 플롯 사용 
@@ -369,13 +441,17 @@ for i, (manufacturer, y) in enumerate(zip(delay_df.index, delay_df["Delay Count"
 
     # 텍스트 출력
     ax1.text(x=i, y=y + 200, s=f"{y}/{total_flights} ({delay_ratio:.1f}%)", 
-             color=text_color, fontsize=11, ha="center")
+             color=text_color, fontweight='bold', fontsize=16, ha="center")
 plt.show()
 ```
 
-# 4. 결론
+# 4. 결론 및 개선 방안
 
 ## 4.1 분석 결과 정리
+
+::: {.panel-tabset}
+
+### 📊 데이터 시각화 
 ```{python}
 
 #| echo : false
@@ -389,7 +465,7 @@ import pandas as pd
 dark_gray = '#A9A9A9'
 
 # 시각화: 4개의 서브플롯 생성
-fig, axes = plt.subplots(2, 2, figsize=(14, 6.5))
+fig, axes = plt.subplots(2, 2, figsize=(14, 5.6))
 
 # (1) 제조사별 지연 평균 그래프
 sns.barplot(x=manufacturer_stats.index, y=manufacturer_stats['mean'], ax=axes[0, 0], 
@@ -416,39 +492,50 @@ axes[1, 0].set_title('Aircraft Manufacturer Distribution for Our Airline')
 sns.barplot(x=delay_df.index, y=delay_df["Delay Count"], ax=axes[1, 1], 
             palette=['red' if x == 'BOEING' else ('gray' if i == 1 else dark_gray) for i, x in enumerate(delay_df.index)])
 axes[1, 1].set_ylabel("Number of Delays")
+
 axes[1, 1].set_title("Number of Delays by Manufacturer")
 
 # 지연 비율(%) 추가 (보조 축)
 ax2 = axes[1, 1].twinx()
 sns.lineplot(x=delay_df.index, y=delay_df["Delay Rate (%)"], marker="o", color="black", ax=ax2)
+
+
 ax2.set_ylabel("Delay Rate (%)")
 ax2.grid(False)
 
+# 주석 추가
+for i, (x, y) in enumerate(zip(delay_df.index, delay_df["Delay Count"])):
+    total_flights = manufacturer_counts[x]
+    delay_ratio = (y / total_flights) * 100
+    axes[1, 1].text(x=i, y=y + 200, s=f"{y}/{total_flights} ({delay_ratio:.1f}%)", 
+                     color="red", fontweight='bold', fontsize=10, ha="center")
 plt.tight_layout()
 plt.show()
-
 ```
 
+### 🚨 운항 지연 문제 분석
 
-## 4.2 운행 방안 
+- BOEING 기종이 전체 운항의 73.2%를 차지하고 있으며,
+- 운항 빈도 대비 지연 발생 비율이 41.8%로 가장 높음
+- 다른 기종에 비해 지연이 집중되는 현상이 뚜렷
+- BOEING 기종의 운항 지연을 줄이는 것이 최우선 과제
 
-<div style="background-color: #222831; padding: 20px; border-radius: 10px; color: white; font-size: 1.2em; line-height: 1.6;">
+### ✈️ 운항 최적화 방안
+#### 1. BOEING 정비 및 예방 정비 강화 🛠️
+  ✅ 정비팀 운영 및 정비소 확충 → _대응력 강화_<br>
+  ✅ 지연 분석 후 노후 기체 교체 → _차질 최소화_<br>
+<br>
 
-일반적으로 특정 제조사의 항공기가 많이 운항된다면, 해당 기종에서 지연이 더 자주 발생하고 지연 시간도 길어질 것이라 예상할 수 있다.
-그러나 분석 결과, 제조사별 평균 지연 시간과 중앙값에는 큰 차이가 없었다.
+#### 2. 예비 기체 활용 최적화 ✈️
+  ✅ 예비 기체 운영 강화 → _긴급 대응 및 가동률 향상_<br>
+  ✅ 스케줄 기반 배치 최적화 → _활용도 극대화, 지연 감소_<br>
 
 <br>
 
-우리 항공사의 운항기종을 살펴보면, <span style="color:#f4c430; font-weight: bold;">BOEING</span> 기종이 <span style="color:#00ADB5; font-weight: bold;">72.2%</span>로 가장 큰 비중을 차지하고 있다.  
+#### 3. 지연 빈도 낮은 제조사 기체 활용 📊
+  ✅ 지연 적은 기체 확대 운용 → _지연 감소_<br>
+  ✅ 신뢰도 높은 기체 운항 확대 → _안정적 운항 환경 조성_
+:::
 
-비록 평균 지연 시간은 다른 제조사 기종과 큰 차이가 없었지만, <span style="color:#f4c430; font-weight: bold;">BOEING</span> 기종에서 발생한 지연 건수는 전체의 <span style="color:#00ADB5; font-weight: bold;">42%</span>로 가장 높은 비율을 차지했다.
-
-즉, <span style="color:#f4c430; font-weight: bold;">BOEING</span> 항공기의 개별적인 지연 시간은 특별히 길지 않지만, **지연이 발생하는 횟수**가 많다는 점이 운항 효율성에 영향을 미칠 수 있다.
-
-<br>
-
-✈️ **따라서 효율적인 항공 운영을 위해**  <span style="color:#f4c430; font-weight: bold;">BOEING</span> 기종의 **정비 인력을 늘리고, 예방 정비를 강화하여**  지연 빈도를 줄이는 것이 필요하다.  
-
-또한, **제조사별 지연 발생 비율을 고려하여**  유지보수 비용을 보다 **합리적으로 배분하는 방안**도 검토할 수 있다.  
-
-</div>
+## Thank you!
+![](./images/thankyou.png){fig-align="center" width=1000 height=600}

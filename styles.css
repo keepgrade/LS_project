@@ -38,8 +38,8 @@
   
   /* 🔹 로고 크기 조정 */
   .reveal .slide-logo {
-    max-height: 500px;  /* 로고 높이 조정 */
-    max-width: 500px;  /* 로고 너비 조정 */
+    max-height: 1000px;  /* 로고 높이 조정 */
+    max-width: 1000px;  /* 로고 너비 조정 */
   }
   
   /* 🔹 배경 이미지 조정 */
@@ -65,3 +65,8 @@
     font-weight: bold;
   }
   
+
+  .reveal pre code {
+    color: #FFD700 !important;  /* 노란색 (골드) */
+    font-weight: bold;  /* 볼드 스타일 */
+}

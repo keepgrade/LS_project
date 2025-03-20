@@ -42,7 +42,6 @@ from nycflights13 import flights, planes
 
 ![](./images/catoon.png){width=800 height=400}
 
-
 ## 2.1 데이터 정보
 
 ::: {.column width="50%" style="margin-top:100px;"}

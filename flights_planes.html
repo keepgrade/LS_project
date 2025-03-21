@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Team F5 : 정의주, 한지수, 신태선">
-  <title>‘nycflights13’ 보고서</title>
+  <title>UA 항공의 제조사별 출발 지연 분석</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -196,8 +196,8 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="images/ua_dep.png" data-background-opacity="0.5" data-background-size="cover" data-font-size="48px" class="quarto-title-block center">
-  <h1 class="title">‘nycflights13’ 보고서</h1>
-  <p class="subtitle">UA 항공의 제조사별 출발 지연 분석</p>
+  <h1 class="title">UA 항공의 제조사별 출발 지연 분석</h1>
+  <p class="subtitle">‘nycflights13’ 보고서</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -266,7 +266,7 @@ Team F5 : 정의주, 한지수, 신태선
 <section id="데이터-정보" class="slide level2">
 <h2>2.1 데이터 정보</h2>
 <div class="column" style="margin-top:80px;">
-<div id="9336228c" class="cell" data-execution_count="2">
+<div id="2a2a5ead" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a>flights.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -309,7 +309,7 @@ memory usage: 48.8+ MB</code></pre>
 <section id="데이터-정보-1" class="slide level2">
 <h2>2.1 데이터 정보</h2>
 <div class="column" style="margin-top:80px;">
-<div id="c39c142a" class="cell" data-execution_count="3">
+<div id="e00fe4e5" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>planes.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -342,20 +342,20 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>두 데이터를 tailnum 기준으로 병합</li>
 </ul>
-<div id="7cf6ba7d" class="cell" data-execution_count="4">
+<div id="e176dd75" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="co"># tailnum을 key로 merge 하기 </span></span>
 <span id="cb5-2"><a href=""></a>df <span class="op">=</span> pd.merge(flights, planes, on <span class="op">=</span> <span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="003022bd" class="cell" data-execution_count="5">
+<div id="fd10c569" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>병합된 데이터 : 336776</code></pre>
 </div>
 </div>
 <ul>
-<li>병합된 데이터의 주요 데이터</li>
+<li>병합된 데이터 셋의 주요 데이터</li>
 </ul>
-<div id="714ee9bf" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="84">
+<div id="f19ff847" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="32">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -447,26 +447,37 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li><strong>UA</strong> 항공사 데이터만 가져오기</li>
 </ul>
-<div id="e77a32b2" class="cell" data-execution_count="8">
+<div id="c4e2c5ca" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="co"># 색상 조건 설정 (UA는 빨간색, 나머지는 하늘색)</span></span>
-<span id="cb7-2"><a href=""></a>g_colors <span class="op">=</span> [<span class="st">'red'</span> <span class="cf">if</span> carrier <span class="op">==</span> <span class="st">'UA'</span> <span class="cf">else</span> <span class="st">'skyblue'</span> <span class="cf">for</span> carrier <span class="kw">in</span> flight_sorted[<span class="st">'carrier'</span>]]</span>
-<span id="cb7-3"><a href=""></a></span>
-<span id="cb7-4"><a href=""></a><span class="co"># 시각화</span></span>
-<span id="cb7-5"><a href=""></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="fl">1.7</span>))</span>
-<span id="cb7-6"><a href=""></a>plt.bar(flight_sorted[<span class="st">'carrier'</span>], flight_sorted[<span class="st">'flight'</span>], color<span class="op">=</span>g_colors)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="co"># 코드 설명 1</span></span>
+<span id="cb7-2"><a href=""></a><span class="co"># 색상 조정 </span></span>
+<span id="cb7-3"><a href=""></a>g_colors <span class="op">=</span> [<span class="st">'red'</span> <span class="cf">if</span> carrier <span class="op">==</span> <span class="st">'UA'</span> <span class="cf">else</span> <span class="st">'skyblue'</span> <span class="cf">for</span> carrier <span class="kw">in</span> flight_sorted[<span class="st">'carrier'</span>]]</span>
+<span id="cb7-4"><a href=""></a></span>
+<span id="cb7-5"><a href=""></a><span class="co"># 항공사별 운항 횟수 계산</span></span>
+<span id="cb7-6"><a href=""></a>carrier_counts <span class="op">=</span> flights[<span class="st">'carrier'</span>].value_counts()</span>
 <span id="cb7-7"><a href=""></a></span>
-<span id="cb7-8"><a href=""></a>plt.xlabel(<span class="st">"Carrier"</span>, fontsize<span class="op">=</span><span class="dv">15</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb7-9"><a href=""></a>plt.ylabel(<span class="st">"Number of Flights"</span>, fontsize<span class="op">=</span><span class="dv">15</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb7-10"><a href=""></a>plt.title(<span class="st">"Number of Flights by Carrier"</span>, fontsize<span class="op">=</span><span class="dv">20</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb7-11"><a href=""></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
-<span id="cb7-12"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-8"><a href=""></a><span class="co"># 그래프 크기 설정</span></span>
+<span id="cb7-9"><a href=""></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">2</span>))</span>
+<span id="cb7-10"><a href=""></a></span>
+<span id="cb7-11"><a href=""></a><span class="co"># 막대 그래프 그리기 (개별 색상 적용)</span></span>
+<span id="cb7-12"><a href=""></a>plt.bar(carrier_counts.index, carrier_counts.values, color<span class="op">=</span>g_colors)</span>
+<span id="cb7-13"><a href=""></a></span>
+<span id="cb7-14"><a href=""></a><span class="co"># 제목 및 축 라벨 설정</span></span>
+<span id="cb7-15"><a href=""></a>plt.title(<span class="st">"Number of Flights by Airline"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb7-16"><a href=""></a>plt.xlabel(<span class="st">"Airline Carrier"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb7-17"><a href=""></a>plt.ylabel(<span class="st">"Number of Flights"</span>, fontsize<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb7-18"><a href=""></a></span>
+<span id="cb7-19"><a href=""></a><span class="co"># X축 레이블 회전 (가독성 개선)</span></span>
+<span id="cb7-20"><a href=""></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb7-21"><a href=""></a></span>
+<span id="cb7-22"><a href=""></a><span class="co"># 그래프 출력</span></span>
+<span id="cb7-23"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="flights_planes_files/figure-revealjs/cell-9-output-1.png" class="quarto-figure quarto-figure-center" width="1129" height="234"></p>
+<p><img data-src="flights_planes_files/figure-revealjs/cell-9-output-1.png" class="quarto-figure quarto-figure-center" width="1125" height="245"></p>
 </figure>
 </div>
 </div>
@@ -474,7 +485,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>UA 항공사 데이터 개수</li>
 </ul>
-<div id="212fc102" class="cell" data-execution_count="9">
+<div id="ddcc7eb8" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>df  <span class="op">=</span> df[df[<span class="st">'carrier'</span>]<span class="op">==</span><span class="st">'UA'</span>]</span>
 <span id="cb8-2"><a href=""></a>df_len <span class="op">=</span> <span class="bu">len</span>(df)</span>
 <span id="cb8-3"><a href=""></a><span class="bu">print</span>(<span class="st">"UA 항공사의 운행량 :"</span>, df_len)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -488,15 +499,15 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>날짜 열 만들기</li>
 </ul>
-<div id="270f7a8a" class="cell" data-execution_count="10">
+<div id="b0d665f6" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>df[<span class="st">'dep_date_time'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'year_x'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-2"><a href=""></a>                                  <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'month'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-3"><a href=""></a>                                  <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'day'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-4"><a href=""></a>                                  <span class="op">+</span> <span class="st">' '</span> <span class="op">+</span> df[<span class="st">'hour'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-5"><a href=""></a>                                  <span class="op">+</span> <span class="st">':'</span> <span class="op">+</span> df[<span class="st">'minute'</span>].astype(<span class="bu">str</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2e759cb1" class="cell" data-execution_count="11">
-<div class="cell-output cell-output-display" data-execution_count="89">
+<div id="ace823cf" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="37">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -561,10 +572,10 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>2013년 1월~6월(상반기) 데이터를 필터링</li>
 </ul>
-<div id="d4cab7cc" class="cell" data-execution_count="12">
+<div id="9ef31655" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a>df_fh <span class="op">=</span> df[(df[<span class="st">'dep_date_time'</span>] <span class="op">&gt;=</span> <span class="st">'2013-01-01'</span>) <span class="op">&amp;</span> (df[<span class="st">'dep_date_time'</span>] <span class="op">&lt;=</span> <span class="st">'2013-06-30'</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5bc9e7f0" class="cell" data-execution_count="13">
+<div id="d8774518" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>전처리된 상반기 데이터 필터링: 58665=&gt;28782</code></pre>
 </div>
@@ -575,45 +586,46 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>빠른 이륙은 지연이 아니므로 0으로 변경</li>
 </ul>
-<div id="e97bc690" class="cell" data-execution_count="14">
+<div id="14496146" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a><span class="co">#0보다 작으면 0이라고 하기 </span></span>
 <span id="cb13-2"><a href=""></a>df_fh[<span class="st">'dep_delay'</span>] <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ff1fbb97" class="cell" data-execution_count="15">
+<div id="2e79ab58" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
 <pre><code>빠른 이륙 처리 후 데이터의 개수: 28782 =&gt; 28782</code></pre>
 </div>
 </div>
+</section>
+<section id="이상치-제거-1" class="slide level2">
+<h2>2.4 이상치 제거</h2>
 <ul>
 <li>이상치 제거를 위한 IQR(Interquartile Range) 계산</li>
 </ul>
-<div id="572f4f79" class="cell" data-execution_count="16">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="co"># 이상치 제거를 위한 IQR(Interquartile Range) 계산 (제조사별 적용)</span></span>
-<span id="cb15-2"><a href=""></a><span class="kw">def</span> remove_outliers_by_manufacturer(df, column, manufacturer_column):</span>
-<span id="cb15-3"><a href=""></a>    filtered_df <span class="op">=</span> pd.DataFrame()  <span class="co"># 이상치 제거된 데이터를 저장할 데이터프레임</span></span>
-<span id="cb15-4"><a href=""></a>    </span>
-<span id="cb15-5"><a href=""></a>    <span class="cf">for</span> manufacturer <span class="kw">in</span> df[manufacturer_column].unique():</span>
-<span id="cb15-6"><a href=""></a>        subset <span class="op">=</span> df[df[manufacturer_column] <span class="op">==</span> manufacturer]  <span class="co"># 특정 제조사 데이터 필터링</span></span>
-<span id="cb15-7"><a href=""></a>        </span>
-<span id="cb15-8"><a href=""></a>        <span class="co"># IQR 계산</span></span>
-<span id="cb15-9"><a href=""></a>        Q1 <span class="op">=</span> subset[column].quantile(<span class="fl">0.25</span>)</span>
-<span id="cb15-10"><a href=""></a>        Q3 <span class="op">=</span> subset[column].quantile(<span class="fl">0.75</span>)</span>
-<span id="cb15-11"><a href=""></a>        IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
-<span id="cb15-12"><a href=""></a>        </span>
-<span id="cb15-13"><a href=""></a>        <span class="co"># 이상치 기준</span></span>
-<span id="cb15-14"><a href=""></a>        lower_bound <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
-<span id="cb15-15"><a href=""></a>        upper_bound <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
-<span id="cb15-16"><a href=""></a></span>
-<span id="cb15-17"><a href=""></a>        <span class="co"># 이상치 제거 후 데이터프레임에 추가</span></span>
-<span id="cb15-18"><a href=""></a>        cleaned_subset <span class="op">=</span> subset[(subset[column] <span class="op">&gt;=</span> lower_bound) <span class="op">&amp;</span> (subset[column] <span class="op">&lt;=</span> upper_bound)]</span>
-<span id="cb15-19"><a href=""></a>        filtered_df <span class="op">=</span> pd.concat([filtered_df, cleaned_subset], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb15-20"><a href=""></a>    </span>
-<span id="cb15-21"><a href=""></a>    <span class="cf">return</span> filtered_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div id="852709e5" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="co"># 이상치 제거를 위한 IQR(Interquartile Range) 계산함수 </span></span>
+<span id="cb15-2"><a href=""></a><span class="co"># 코드 설명 </span></span>
+<span id="cb15-3"><a href=""></a><span class="kw">def</span> remove_outliers_by_manufacturer(df, column, manufacturer_column):</span>
+<span id="cb15-4"><a href=""></a>    filtered_df <span class="op">=</span> pd.DataFrame()  <span class="co"># 이상치 제거된 데이터를 저장할 데이터프레임</span></span>
+<span id="cb15-5"><a href=""></a>    </span>
+<span id="cb15-6"><a href=""></a>    <span class="cf">for</span> manufacturer <span class="kw">in</span> df[manufacturer_column].unique():</span>
+<span id="cb15-7"><a href=""></a>        subset <span class="op">=</span> df[df[manufacturer_column] <span class="op">==</span> manufacturer]  <span class="co"># 특정 제조사 데이터 필터링</span></span>
+<span id="cb15-8"><a href=""></a>        </span>
+<span id="cb15-9"><a href=""></a>        <span class="co"># IQR 계산</span></span>
+<span id="cb15-10"><a href=""></a>        Q1 <span class="op">=</span> subset[column].quantile(<span class="fl">0.25</span>)</span>
+<span id="cb15-11"><a href=""></a>        Q3 <span class="op">=</span> subset[column].quantile(<span class="fl">0.75</span>)</span>
+<span id="cb15-12"><a href=""></a>        IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
+<span id="cb15-13"><a href=""></a>        </span>
+<span id="cb15-14"><a href=""></a>        <span class="co"># 이상치 기준</span></span>
+<span id="cb15-15"><a href=""></a>        lower_bound <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb15-16"><a href=""></a>        upper_bound <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb15-17"><a href=""></a></span>
+<span id="cb15-18"><a href=""></a>        <span class="co"># 이상치 제거 후 데이터프레임에 추가</span></span>
+<span id="cb15-19"><a href=""></a>        cleaned_subset <span class="op">=</span> subset[(subset[column] <span class="op">&gt;=</span> lower_bound) <span class="op">&amp;</span> (subset[column] <span class="op">&lt;=</span> upper_bound)]</span>
+<span id="cb15-20"><a href=""></a>        filtered_df <span class="op">=</span> pd.concat([filtered_df, cleaned_subset], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-21"><a href=""></a>    </span>
+<span id="cb15-22"><a href=""></a>    <span class="cf">return</span> filtered_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5d90cd77" class="cell" data-execution_count="17">
+<div id="a074fc7b" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-stdout">
 <pre><code>이상치 제거 후 데이터의 개수: 28782 =&gt; 23683</code></pre>
 </div>
@@ -640,7 +652,7 @@ memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
 <div class="cell">
-<div id="5fb51a2e" class="cell" data-execution_count="19">
+<div id="f6c24759" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a><span class="co"># 제조사별 평균 및 중앙값 계산 및 정렬</span></span>
@@ -653,7 +665,7 @@ memory usage: 233.7+ KB</code></pre>
 <span id="cb17-8"><a href=""></a>manufacturer_stats <span class="op">=</span> manufacturer_stats.reindex(manufacturer_order)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="701c096c" class="cell" data-execution_count="20">
+<div id="ad0fe778" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -688,15 +700,16 @@ memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
 </div>
-<div id="4f36ffd8" class="cell" data-execution_count="23">
+<div id="c5a90318" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href=""></a><span class="co"># 다크그레이 HEX 코드 설정</span></span>
 <span id="cb18-2"><a href=""></a>dark_gray <span class="op">=</span> <span class="st">'#A9A9A9'</span></span>
 <span id="cb18-3"><a href=""></a></span>
-<span id="cb18-4"><a href=""></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.2</span>))</span>
-<span id="cb18-5"><a href=""></a>plt.pie(manufacturer_counts, labels<span class="op">=</span>labels, autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>, startangle<span class="op">=</span><span class="dv">140</span>, colors<span class="op">=</span>[<span class="st">'red'</span>,<span class="st">'gray'</span>, dark_gray])</span>
-<span id="cb18-6"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-4"><a href=""></a><span class="co"># 파이 그래프 </span></span>
+<span id="cb18-5"><a href=""></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.2</span>))</span>
+<span id="cb18-6"><a href=""></a>plt.pie(manufacturer_counts, labels<span class="op">=</span>labels, autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>, startangle<span class="op">=</span><span class="dv">140</span>, colors<span class="op">=</span>[<span class="st">'red'</span>,<span class="st">'gray'</span>, dark_gray])</span>
+<span id="cb18-7"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -724,46 +737,47 @@ memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
 </div>
-<div id="816e7639" class="cell" data-execution_count="25">
+<div id="273509e2" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href=""></a>yellow <span class="op">=</span> <span class="st">'#ffcc00'</span></span>
-<span id="cb19-2"><a href=""></a></span>
-<span id="cb19-3"><a href=""></a><span class="co"># 시각화 서브 플롯 사용 </span></span>
-<span id="cb19-4"><a href=""></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">4</span>))</span>
-<span id="cb19-5"><a href=""></a>total_flights_df <span class="op">=</span> df_fh[<span class="st">'manufacturer'</span>].value_counts()</span>
-<span id="cb19-6"><a href=""></a><span class="co"># 바 차트: 지연 횟수</span></span>
-<span id="cb19-7"><a href=""></a>sns.barplot(x<span class="op">=</span>delay_df.index, y<span class="op">=</span>delay_df[<span class="st">"Delay Count"</span>], palette<span class="op">=</span>[<span class="st">'red'</span>, <span class="st">'gray'</span>, dark_gray], ax<span class="op">=</span>ax1)</span>
-<span id="cb19-8"><a href=""></a>ax1.set_ylabel(<span class="st">"Number of Delays"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb19-9"><a href=""></a>ax1.set_xlabel(<span class="st">"Manufacturer"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb19-10"><a href=""></a>ax1.set_title(<span class="st">"Number of Delays by Manufacturer"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
-<span id="cb19-11"><a href=""></a>ax1.tick_params(axis<span class="op">=</span><span class="st">"x"</span>)</span>
-<span id="cb19-12"><a href=""></a></span>
-<span id="cb19-13"><a href=""></a><span class="co"># 라인 차트: 지연 비율 (%)</span></span>
-<span id="cb19-14"><a href=""></a>ax2 <span class="op">=</span> ax1.twinx()</span>
-<span id="cb19-15"><a href=""></a>sns.lineplot(x<span class="op">=</span>delay_df.index, y<span class="op">=</span>delay_df[<span class="st">"Delay Rate (%)"</span>], marker<span class="op">=</span><span class="st">"o"</span>, color<span class="op">=</span>yellow, ax<span class="op">=</span>ax2)</span>
-<span id="cb19-16"><a href=""></a>ax2.set_ylabel(<span class="st">"Delay Rate (%)"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb19-17"><a href=""></a>ax2.grid(<span class="va">False</span>)</span>
-<span id="cb19-18"><a href=""></a></span>
-<span id="cb19-19"><a href=""></a><span class="co"># 🔥 색상 설정: BOEING - 빨간색, AIRBUS INDUSTRIE - 회색, AIRBUS - 짙은 회색 🔥</span></span>
-<span id="cb19-20"><a href=""></a>color_map <span class="op">=</span> {</span>
-<span id="cb19-21"><a href=""></a>    <span class="st">"BOEING"</span>: <span class="st">"red"</span>,</span>
-<span id="cb19-22"><a href=""></a>    <span class="st">"AIRBUS INDUSTRIE"</span>: <span class="st">"gray"</span>,</span>
-<span id="cb19-23"><a href=""></a>    <span class="st">"AIRBUS"</span>: dark_gray  <span class="co"># 짙은 회색 (Dark Gray)</span></span>
-<span id="cb19-24"><a href=""></a>}</span>
-<span id="cb19-25"><a href=""></a></span>
-<span id="cb19-26"><a href=""></a><span class="co"># 🔥 지연 횟수 / 총 운항 횟수 숫자 직접 표시 🔥</span></span>
-<span id="cb19-27"><a href=""></a><span class="cf">for</span> i, (manufacturer, y) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(delay_df.index, delay_df[<span class="st">"Delay Count"</span>])):</span>
-<span id="cb19-28"><a href=""></a>    total_flights <span class="op">=</span> total_flights_df[manufacturer]  <span class="co"># 각 제조사의 총 운항 횟수 가져오기</span></span>
-<span id="cb19-29"><a href=""></a>    delay_ratio <span class="op">=</span> (y <span class="op">/</span> total_flights) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># 지연 횟수 / 총 운항 횟수 비율</span></span>
-<span id="cb19-30"><a href=""></a>    </span>
-<span id="cb19-31"><a href=""></a>    <span class="co"># 🔥 제조사별 색상 선택 (기본값은 검정색)</span></span>
-<span id="cb19-32"><a href=""></a>    text_color <span class="op">=</span> color_map.get(manufacturer, <span class="st">"black"</span>)</span>
-<span id="cb19-33"><a href=""></a></span>
-<span id="cb19-34"><a href=""></a>    <span class="co"># 텍스트 출력</span></span>
-<span id="cb19-35"><a href=""></a>    ax1.text(x<span class="op">=</span>i, y<span class="op">=</span>y <span class="op">+</span> <span class="dv">200</span>, s<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>total_flights<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>delay_ratio<span class="sc">:.1f}</span><span class="ss">%)"</span>, </span>
-<span id="cb19-36"><a href=""></a>             color<span class="op">=</span>text_color, fontweight<span class="op">=</span><span class="st">'bold'</span>, fontsize<span class="op">=</span><span class="dv">16</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="cb19-37"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href=""></a><span class="co"># 색상 사용자 지정 </span></span>
+<span id="cb19-2"><a href=""></a>yellow <span class="op">=</span> <span class="st">'#ffcc00'</span></span>
+<span id="cb19-3"><a href=""></a></span>
+<span id="cb19-4"><a href=""></a><span class="co"># 시각화 서브 플롯 사용 </span></span>
+<span id="cb19-5"><a href=""></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">4</span>))</span>
+<span id="cb19-6"><a href=""></a>total_flights_df <span class="op">=</span> df_fh[<span class="st">'manufacturer'</span>].value_counts()</span>
+<span id="cb19-7"><a href=""></a><span class="co"># 바 차트: 지연 횟수</span></span>
+<span id="cb19-8"><a href=""></a>sns.barplot(x<span class="op">=</span>delay_df.index, y<span class="op">=</span>delay_df[<span class="st">"Delay Count"</span>], palette<span class="op">=</span>[<span class="st">'red'</span>, <span class="st">'gray'</span>, dark_gray], ax<span class="op">=</span>ax1)</span>
+<span id="cb19-9"><a href=""></a>ax1.set_ylabel(<span class="st">"Number of Delays"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb19-10"><a href=""></a>ax1.set_xlabel(<span class="st">"Manufacturer"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb19-11"><a href=""></a>ax1.set_title(<span class="st">"Number of Delays by Manufacturer"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb19-12"><a href=""></a>ax1.tick_params(axis<span class="op">=</span><span class="st">"x"</span>)</span>
+<span id="cb19-13"><a href=""></a></span>
+<span id="cb19-14"><a href=""></a><span class="co"># 라인 차트: 지연 비율 (%)</span></span>
+<span id="cb19-15"><a href=""></a>ax2 <span class="op">=</span> ax1.twinx()</span>
+<span id="cb19-16"><a href=""></a>sns.lineplot(x<span class="op">=</span>delay_df.index, y<span class="op">=</span>delay_df[<span class="st">"Delay Rate (%)"</span>], marker<span class="op">=</span><span class="st">"o"</span>, color<span class="op">=</span>yellow, ax<span class="op">=</span>ax2)</span>
+<span id="cb19-17"><a href=""></a>ax2.set_ylabel(<span class="st">"Delay Rate (%)"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb19-18"><a href=""></a>ax2.grid(<span class="va">False</span>)</span>
+<span id="cb19-19"><a href=""></a></span>
+<span id="cb19-20"><a href=""></a><span class="co"># 🔥 색상 설정: BOEING - 빨간색, AIRBUS INDUSTRIE - 회색, AIRBUS - 짙은 회색 🔥</span></span>
+<span id="cb19-21"><a href=""></a>color_map <span class="op">=</span> {</span>
+<span id="cb19-22"><a href=""></a>    <span class="st">"BOEING"</span>: <span class="st">"red"</span>,</span>
+<span id="cb19-23"><a href=""></a>    <span class="st">"AIRBUS INDUSTRIE"</span>: <span class="st">"gray"</span>,</span>
+<span id="cb19-24"><a href=""></a>    <span class="st">"AIRBUS"</span>: dark_gray  <span class="co"># 짙은 회색 (Dark Gray)</span></span>
+<span id="cb19-25"><a href=""></a>}</span>
+<span id="cb19-26"><a href=""></a></span>
+<span id="cb19-27"><a href=""></a><span class="co"># 🔥 지연 횟수 / 총 운항 횟수 숫자 직접 표시 🔥</span></span>
+<span id="cb19-28"><a href=""></a><span class="cf">for</span> i, (manufacturer, y) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(delay_df.index, delay_df[<span class="st">"Delay Count"</span>])):</span>
+<span id="cb19-29"><a href=""></a>    total_flights <span class="op">=</span> total_flights_df[manufacturer]  <span class="co"># 각 제조사의 총 운항 횟수 가져오기</span></span>
+<span id="cb19-30"><a href=""></a>    delay_ratio <span class="op">=</span> (y <span class="op">/</span> total_flights) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># 지연 횟수 / 총 운항 횟수 비율</span></span>
+<span id="cb19-31"><a href=""></a>    </span>
+<span id="cb19-32"><a href=""></a>    <span class="co"># 🔥 제조사별 색상 선택 (기본값은 검정색)</span></span>
+<span id="cb19-33"><a href=""></a>    text_color <span class="op">=</span> color_map.get(manufacturer, <span class="st">"black"</span>)</span>
+<span id="cb19-34"><a href=""></a></span>
+<span id="cb19-35"><a href=""></a>    <span class="co"># 텍스트 출력</span></span>
+<span id="cb19-36"><a href=""></a>    ax1.text(x<span class="op">=</span>i, y<span class="op">=</span>y <span class="op">+</span> <span class="dv">200</span>, s<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>total_flights<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>delay_ratio<span class="sc">:.1f}</span><span class="ss">%)"</span>, </span>
+<span id="cb19-37"><a href=""></a>             color<span class="op">=</span>text_color, fontweight<span class="op">=</span><span class="st">'bold'</span>, fontsize<span class="op">=</span><span class="dv">16</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb19-38"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -785,7 +799,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">📊 데이터 시각화</a></li><li><a href="#tabset-1-2">🚨 운항 지연 문제 분석</a></li><li><a href="#tabset-1-3">✈️ 운항 최적화 방안</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
-<div id="0a0e945d" class="cell" data-execution_count="26">
+<div id="93951a0c" class="cell" data-execution_count="26">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-left">
 <figure>

@@ -1,12 +1,14 @@
 ---
-title: "'nycflights13' 보고서"
+title: "UA 항공의 제조사별 출발 지연 분석"
+code-overflow: scroll  # 코드 길어질 경우 스크롤 허용
 title-slide-attributes: 
   data-background-image: images/ua_dep.png
   data-background-size: cover
   data-background-opacity: "0.5"  # 배경 투명도 조절
   data-font-size: 48px  # 🔥 기본 글자 크기 조절 (제목, 부제목, 저자 포함)
+  
 author: "Team F5 : 정의주, 한지수, 신태선"
-subtitle: "UA 항공의 제조사별 출발 지연 분석"
+subtitle: "'nycflights13' 보고서"
 format:
   revealjs:
     footer: "© 2025 Team F5"
@@ -158,14 +160,24 @@ flight_sorted = flight.sort_values(by='flight', ascending=False)
 # 색상 조정 
 g_colors = ['red' if carrier == 'UA' else 'skyblue' for carrier in flight_sorted['carrier']]
 
-# 시각화
-plt.figure(figsize=(14, 1.7))
-plt.bar(flight_sorted['carrier'], flight_sorted['flight'], color=g_colors)
+# 항공사별 운항 횟수 계산
+carrier_counts = flights['carrier'].value_counts()
 
-plt.xlabel("Carrier", fontsize=15, fontweight='bold')
-plt.ylabel("Number of Flights", fontsize=15, fontweight='bold')
-plt.title("Number of Flights by Carrier", fontsize=20, fontweight='bold')
+# 그래프 크기 설정
+plt.figure(figsize=(14, 2))
+
+# 막대 그래프 그리기 (개별 색상 적용)
+plt.bar(carrier_counts.index, carrier_counts.values, color=g_colors)
+
+# 제목 및 축 라벨 설정
+plt.title("Number of Flights by Airline", fontsize=14)
+plt.xlabel("Airline Carrier", fontsize=12)
+plt.ylabel("Number of Flights", fontsize=6)
+
+# X축 레이블 회전 (가독성 개선)
 plt.xticks(rotation=45)
+
+# 그래프 출력
 plt.show()
 ```
 - UA 항공사 데이터 개수
@@ -215,11 +227,10 @@ zero_df_fh = len(df_fh)
 print(f"빠른 이륙 처리 후 데이터의 개수: {first_half} => {zero_df_fh}")
 ```
 
-
+## 2.4 이상치 제거
 - 이상치 제거를 위한 IQR(Interquartile Range) 계산
 
 ```{python}
-#| code-fold : true
 # 이상치 제거를 위한 IQR(Interquartile Range) 계산함수 
 # 코드 설명 
 def remove_outliers_by_manufacturer(df, column, manufacturer_column):

@@ -266,7 +266,7 @@ Team F5 : 정의주, 한지수, 신태선
 <section id="데이터-정보" class="slide level2">
 <h2>2.1 데이터 정보</h2>
 <div class="column" style="margin-top:80px;">
-<div id="2a2a5ead" class="cell" data-execution_count="2">
+<div id="2c071aec" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a>flights.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -309,7 +309,7 @@ memory usage: 48.8+ MB</code></pre>
 <section id="데이터-정보-1" class="slide level2">
 <h2>2.1 데이터 정보</h2>
 <div class="column" style="margin-top:80px;">
-<div id="e00fe4e5" class="cell" data-execution_count="3">
+<div id="0a04c6e0" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>planes.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -342,11 +342,11 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>두 데이터를 tailnum 기준으로 병합</li>
 </ul>
-<div id="e176dd75" class="cell" data-execution_count="4">
+<div id="84a68be6" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="co"># tailnum을 key로 merge 하기 </span></span>
 <span id="cb5-2"><a href=""></a>df <span class="op">=</span> pd.merge(flights, planes, on <span class="op">=</span> <span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fd10c569" class="cell" data-execution_count="5">
+<div id="a4d60c23" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>병합된 데이터 : 336776</code></pre>
 </div>
@@ -354,8 +354,8 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>병합된 데이터 셋의 주요 데이터</li>
 </ul>
-<div id="f19ff847" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div id="0c0e44b9" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -447,7 +447,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li><strong>UA</strong> 항공사 데이터만 가져오기</li>
 </ul>
-<div id="c4e2c5ca" class="cell" data-execution_count="8">
+<div id="fc19fb0b" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="co"># 코드 설명 1</span></span>
@@ -485,7 +485,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>UA 항공사 데이터 개수</li>
 </ul>
-<div id="ddcc7eb8" class="cell" data-execution_count="9">
+<div id="b43fed9d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>df  <span class="op">=</span> df[df[<span class="st">'carrier'</span>]<span class="op">==</span><span class="st">'UA'</span>]</span>
 <span id="cb8-2"><a href=""></a>df_len <span class="op">=</span> <span class="bu">len</span>(df)</span>
 <span id="cb8-3"><a href=""></a><span class="bu">print</span>(<span class="st">"UA 항공사의 운행량 :"</span>, df_len)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -499,15 +499,15 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>날짜 열 만들기</li>
 </ul>
-<div id="b0d665f6" class="cell" data-execution_count="10">
+<div id="34cea51d" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>df[<span class="st">'dep_date_time'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'year_x'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-2"><a href=""></a>                                  <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'month'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-3"><a href=""></a>                                  <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> df[<span class="st">'day'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-4"><a href=""></a>                                  <span class="op">+</span> <span class="st">' '</span> <span class="op">+</span> df[<span class="st">'hour'</span>].astype(<span class="bu">str</span>) </span>
 <span id="cb10-5"><a href=""></a>                                  <span class="op">+</span> <span class="st">':'</span> <span class="op">+</span> df[<span class="st">'minute'</span>].astype(<span class="bu">str</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ace823cf" class="cell" data-execution_count="11">
-<div class="cell-output cell-output-display" data-execution_count="37">
+<div id="a521958b" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -572,10 +572,10 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>2013년 1월~6월(상반기) 데이터를 필터링</li>
 </ul>
-<div id="9ef31655" class="cell" data-execution_count="12">
+<div id="41188c0a" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a>df_fh <span class="op">=</span> df[(df[<span class="st">'dep_date_time'</span>] <span class="op">&gt;=</span> <span class="st">'2013-01-01'</span>) <span class="op">&amp;</span> (df[<span class="st">'dep_date_time'</span>] <span class="op">&lt;=</span> <span class="st">'2013-06-30'</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="d8774518" class="cell" data-execution_count="13">
+<div id="ab5e3a16" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>전처리된 상반기 데이터 필터링: 58665=&gt;28782</code></pre>
 </div>
@@ -586,11 +586,11 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>빠른 이륙은 지연이 아니므로 0으로 변경</li>
 </ul>
-<div id="14496146" class="cell" data-execution_count="14">
+<div id="8ab74a9d" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a><span class="co">#0보다 작으면 0이라고 하기 </span></span>
 <span id="cb13-2"><a href=""></a>df_fh[<span class="st">'dep_delay'</span>] <span class="op">=</span> df_fh[<span class="st">'dep_delay'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2e79ab58" class="cell" data-execution_count="15">
+<div id="1cf66b4e" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
 <pre><code>빠른 이륙 처리 후 데이터의 개수: 28782 =&gt; 28782</code></pre>
 </div>
@@ -601,7 +601,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul>
 <li>이상치 제거를 위한 IQR(Interquartile Range) 계산</li>
 </ul>
-<div id="852709e5" class="cell" data-execution_count="16">
+<div id="b2b01032" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="co"># 이상치 제거를 위한 IQR(Interquartile Range) 계산함수 </span></span>
 <span id="cb15-2"><a href=""></a><span class="co"># 코드 설명 </span></span>
 <span id="cb15-3"><a href=""></a><span class="kw">def</span> remove_outliers_by_manufacturer(df, column, manufacturer_column):</span>
@@ -625,7 +625,7 @@ memory usage: 233.7+ KB</code></pre>
 <span id="cb15-21"><a href=""></a>    </span>
 <span id="cb15-22"><a href=""></a>    <span class="cf">return</span> filtered_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="a074fc7b" class="cell" data-execution_count="17">
+<div id="c4f3b873" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-stdout">
 <pre><code>이상치 제거 후 데이터의 개수: 28782 =&gt; 23683</code></pre>
 </div>
@@ -646,13 +646,13 @@ memory usage: 233.7+ KB</code></pre>
 <div class="callout-content">
 <ul>
 <li>제조사별 출발 지연시간의 평균과 중앙값을 비교한 결과, 큰 차이는 나타나지 않음</li>
-<li>추가적인 지연 원인(정비 주기, 기종별 특성, 운항 패턴 등)을 고려하여 분석을 확장할 필요가 있음</li>
+<li>추가적인 지연 원인을 고려하여 분석을 확장할 필요가 있음</li>
 </ul>
 </div>
 </div>
 </div>
 <div class="cell">
-<div id="f6c24759" class="cell" data-execution_count="19">
+<div id="593706df" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a><span class="co"># 제조사별 평균 및 중앙값 계산 및 정렬</span></span>
@@ -665,7 +665,7 @@ memory usage: 233.7+ KB</code></pre>
 <span id="cb17-8"><a href=""></a>manufacturer_stats <span class="op">=</span> manufacturer_stats.reindex(manufacturer_order)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="ad0fe778" class="cell" data-execution_count="20">
+<div id="19100092" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -700,7 +700,7 @@ memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
 </div>
-<div id="c5a90318" class="cell" data-execution_count="23">
+<div id="0652dd11" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href=""></a><span class="co"># 다크그레이 HEX 코드 설정</span></span>
@@ -737,7 +737,7 @@ memory usage: 233.7+ KB</code></pre>
 </div>
 </div>
 </div>
-<div id="273509e2" class="cell" data-execution_count="25">
+<div id="29a101d0" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href=""></a><span class="co"># 색상 사용자 지정 </span></span>
@@ -799,7 +799,7 @@ memory usage: 233.7+ KB</code></pre>
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">📊 데이터 시각화</a></li><li><a href="#tabset-1-2">🚨 운항 지연 문제 분석</a></li><li><a href="#tabset-1-3">✈️ 운항 최적화 방안</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
-<div id="93951a0c" class="cell" data-execution_count="26">
+<div id="780a7e07" class="cell" data-execution_count="26">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-left">
 <figure>
